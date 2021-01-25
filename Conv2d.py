@@ -29,7 +29,7 @@ class Conv2d(tf.Module):
             ),
             trainable=True,
         )
-        self.w = tf.cast(self.w, tf.bfloat16)
+
         if self.use_bias:
             if b is None:
                 self.b = tf.Variable(
@@ -37,7 +37,6 @@ class Conv2d(tf.Module):
                     trainable=True,
                     name='bias',
                 )
-                self.b = tf.cast(self.b, tf.bfloat16)
 
     def __call__(self, x):
         x = tf.nn.conv2d(x, self.w, strides=[1, self.stride, self.stride, 1], padding=self.padding, data_format=self.data_format)

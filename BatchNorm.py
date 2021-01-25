@@ -35,10 +35,9 @@ class BatchNorm(tf.Module):
                 scale=self.gamma,
                 variance_epsilon=config.BATCH_NORM_EPSILON,
             )
-            x = tf.cast(x, tf.bfloat16, name='batch_norm_recast')
             if (isinstance(self.moving_mean, tf.Variable) and isinstance(self.moving_variance, tf.Variable)):
                 decay = tf.cast(1. - config.BATCH_NORM_DECAY, tf.float32)
-            return x, mean, variance
+            return x
         else:
             x, _, _ = tf.nn.batch_normalization(
                 x=x,
@@ -49,6 +48,12 @@ class BatchNorm(tf.Module):
                 variance_epsilon=config.BATCH_NORM_EPSILON
             )
 
+
+if __name__ == '__main__':
+    img = tf.random.normal([1, 32, 32, 32])
+    model = BatchNorm(32, training=True)
+    output = model(img)
+    print(output[0].shape)
 # def shared_weights(w, num_scores):
 #     del num_scores
 #     return w

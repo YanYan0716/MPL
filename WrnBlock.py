@@ -22,19 +22,19 @@ class WrnBlock(tf.Module):
             filter_size=3,
             num_out_filters=self.num_out_filters,
             stride=self.stride,
-            name='conv_3*3_1',
+            name='conv_3_1',
         )
         self.batch_norm_2 = BatchNorm(
-            size=self.num_inp_filters,
+            size=self.num_out_filters,
             training=self.training,
             name='bn_2',
         )
         self.conv2d_2 = Conv2d(
-            num_inp_filters=self.num_inp_filters,
+            num_inp_filters=self.num_out_filters,
             filter_size=3,
             num_out_filters=self.num_out_filters,
             stride=1,
-            name='conv_3*3_2'
+            name='conv_3_2'
         )
         self.residual = Conv2d(
             num_inp_filters=self.num_inp_filters,
@@ -60,5 +60,8 @@ class WrnBlock(tf.Module):
         return x
 
 
-# def wrn_block(x, params, num_out_filters, stride, training=True, name='wrn_black'):
-#     pass
+if __name__ == '__main__':
+    img = tf.random.normal([1, 32, 32, 32])
+    model = WrnBlock(num_inp_filters=32, num_out_filters=32, stride=1, training=True, name='wrn_block_1')
+    output = model(img)
+    print(output.shape)
