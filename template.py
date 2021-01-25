@@ -1,7 +1,12 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+
 import tensorflow as tf
 import numpy as np
 
 
+@tf.function
 def my_op(a, b, c, g):
     with g.name_scope('MyOp') as scope:
         sum = tf.reduce_sum(a, name=scope)
@@ -10,21 +15,16 @@ def my_op(a, b, c, g):
 
 if __name__ == '__main__':
     g = tf.Graph()
-    # with g.as_default():
-    #     c = tf.constant(30.0)
-    #     assert c.graph is g
-    #     with g.name_scope('scope1'):
-    #         with g.name_scope('scope2'):
-    #             print(g.get_name_scope())
-    a = tf.ones((2, 2))
-    b = tf.constant(30.0)
-    c = tf.constant(30.0)
-    #
-    # a = tf.convert_to_tensor(a, name='a')
-    # b = tf.convert_to_tensor(b, name='b')
-    # c = tf.convert_to_tensor(c, name='c')
-
     with g.as_default():
-        sum = my_op(a, b, c, g)
-        print(g.get_name_scope())
+        with g.name_scope('scope1'):
+            with g.name_scope('scope2'):
+                print(g.get_name_scope())
 
+    inputs = tf.ones((2, 2))
+    with g.name_scope('my_layer') as scope:
+        weights = tf.Variable(initial_value=tf.constant(2.0, shape=(2, 2)), name='weights', shape=(2, 2))
+        g.add_to_collection('weights', weights)
+        biases = tf.Variable(initial_value=tf.constant(0.0, shape=(2, 2)), name='bias', shape=(2, 2))
+        affine = tf.matmul(inputs, weights) + biases
+        output = tf.nn.relu(affine, name=scope)
+        print(g.get_collection('weights'))
