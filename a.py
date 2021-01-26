@@ -6,6 +6,7 @@ import tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np
 
+import normal
 import config
 
 @tf.function
@@ -66,7 +67,7 @@ if __name__ == '__main__':
     img = tf.convert_to_tensor(img, dtype=tf.float32)
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
     # 使用keras中的BN层
-    bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True, renorm=False, )
+    bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True, renorm=False, fused=False )
     model_k = tf.keras.Sequential()
     model_k.add(tf.keras.Input(shape=(None, None, 3)))
     model_k.add(bn)
@@ -80,14 +81,14 @@ if __name__ == '__main__':
             print(img[0][0][0])
             output_k = model_k(img, training=True)
             print(model_k.layers[0].weights)
-            print(output_k[0][0][0])
+            # print(output_k[0][0][0])
             Loss = loss(output_k)
             # print(Loss, )
         grad = tape.gradient(Loss, model_k.trainable_weights)
         opt.apply_gradients(zip(grad, model_k.trainable_weights))
 
     print('-------------------------------')
-    # 使用自己定义的BN层
+    # # 使用自己定义的BN层
     model_m = BatchNorm(3, training=True)
     # for i in range(len(model_m.trainable_variables)):
     #     print(model_m.trainable_variables[i])
@@ -97,9 +98,11 @@ if __name__ == '__main__':
             print(img[0][0][0])
             output_m = model_m(img)
             print(model_m.variables)
-            print(output_m[0][0][0])
+            # print(output_m[0][0][0])
 
             Loss = loss(output_m)
             # print(Loss)
         grad = tape.gradient(Loss, model_m.trainable_variables)
         opt.apply_gradients(zip(grad, model_m.trainable_variables))
+
+'''https://arxiv.org/pdf/1502.03167v3.pdf'''
