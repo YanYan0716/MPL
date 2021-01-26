@@ -12,6 +12,7 @@ def u(moving, normal):
     decay = tf.cast(1.-config.BATCH_NORM_DECAY, tf.float32)
     return moving.assign_sub(decay*(moving-normal))
 
+
 class MyBn(tf.Module):
     def __init__(self, size, training=True, name='name'):
         super().__init__(name=name)
@@ -34,14 +35,22 @@ class MyBn(tf.Module):
         )
         # print(self.moving_variance)
 
+    def assign_moving_average(self, variable, value):
+        delta = variable * config.BATCH_NORM_DECAY + value * (1-config.BATCH_NORM_DECAY)
+        # print(delta.shape)
+        return variable.assign(delta)
+
     @tf.function
     def __call__(self, x):
         mean, variance = tf.nn.moments(x, [0, 1, 2])
+        mean_update = self.assign_moving_average(self.moving_mean, mean)
+        variance_update = self.assign_moving_average(self.moving_variance, mean)
+        # self.add_update(mean_update)
         x = tf.nn.batch_normalization(
             x, mean=mean, variance=variance, offset=self.beta, scale=self.gamma,
             variance_epsilon=config.BATCH_NORM_EPSILON
         )
-        self.add_update()
+        # self.add_update()
         return x
 
 
@@ -50,5 +59,5 @@ if __name__ == '__main__':
     img = np.random.random((1, 2, 2, 3))
     img = tf.convert_to_tensor(img, dtype=tf.float32)
     # print(img)
-    model = MyBn(size=16)
+    model = MyBn(size=3)
     output = model(img)
