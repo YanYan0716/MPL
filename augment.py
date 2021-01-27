@@ -71,7 +71,7 @@ REPLACE_FUNCS = frozenset({
 def blend(image1, image2, factor):
     """Blend image1 and image2 using 'factor'.
 
-    Factor can be above 0.0.  A value o  f 0.0 means only image1 is used.
+    Factor can be above 0.0.  A value of 0.0 means only image1 is used.
     A value of 1.0 means only image2 is used.  A value between 0.0 and
     1.0 means we linearly interpolate the pixel values between the two
     images.  A value greater than 1.0 "extrapolates" the difference
