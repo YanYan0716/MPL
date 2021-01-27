@@ -78,6 +78,7 @@ if __name__ == '__main__':
             Loss = loss(output_k)
         grad = tape.gradient(Loss, model_k.trainable_weights)
         opt.apply_gradients(zip(grad, model_k.trainable_weights))
+        print(Loss)
         print(model_k.layers[0].weights[2])
 
     print('-----------------')
@@ -90,6 +91,7 @@ if __name__ == '__main__':
             Loss = loss(output_m)
         grad = tape.gradient(Loss, model_m.trainable_variables)
         opt.apply_gradients(zip(grad, model_m.trainable_variables))
+        print(Loss)
         print(model_m.moving_mean)
 
 
