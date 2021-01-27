@@ -1,15 +1,15 @@
 '''
-reference: https://arxiv.org/pdf/1502.03167v3.pdf
+测试keras中定义的BN层和自己定义的BN层
 '''
 import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import tensorflow as tf
+from tensorflow.keras import layers
 import numpy as np
 
 import config
-
 
 @tf.function
 def update(moving, normal):
@@ -46,16 +46,13 @@ class BatchNorm(tf.Module):
                 epsilon=config.BATCH_NORM_EPSILON,
                 is_training=True,
             )
-            self.moving_variance.assign(
-                self.moving_variance * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * variance,
-                use_locking=True)
-            self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean,
-                                    use_locking=True)
+            self.moving_variance.assign(self.moving_variance*config.BATCH_NORM_DECAY+(1.0-config.BATCH_NORM_DECAY)*variance, use_locking=True)
+            self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean, use_locking=True)
             return x
 
 
 def loss(input):
-    value = tf.reduce_mean(input + 1)
+    value = tf.reduce_mean(input+1)
     value = tf.expand_dims(value, axis=0)
     value = tf.expand_dims(value, axis=0)
     return value
@@ -66,6 +63,19 @@ if __name__ == '__main__':
     img = np.random.random([1, 32, 32, 3])
     img = tf.convert_to_tensor(img, dtype=tf.float32)
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
+
+    # 使用keras中的BN层
+    bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True)
+    model_k = tf.keras.Sequential()
+    model_k.add(tf.keras.Input(shape=(None, None, 3)))
+    model_k.add(bn)
+    for i in range(2):
+        with tf.GradientTape() as tape:
+            output_k = model_k(img, training=True)
+            Loss = loss(output_k)
+            print(model_k.layers[0].weights)
+            grad = tape.gradient(Loss, model_k.trainable_weights)
+            opt.apply_gradients(zip(grad, model_k.trainable_weights))
 
     # 使用自己定义的BN层
     model_m = BatchNorm(3, training=True)
@@ -79,4 +89,4 @@ if __name__ == '__main__':
         opt.apply_gradients(zip(grad, model_m.trainable_variables))
         # print(model_m.trainable_variables)
 
-''''''
+'''https://arxiv.org/pdf/1502.03167v3.pdf'''
