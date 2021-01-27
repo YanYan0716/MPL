@@ -50,6 +50,7 @@ from typing import Text, Dict, Any, Tuple, List
 
 from absl import logging
 import tensorflow.compat.v1 as tf
+
 # from tensorflow.contrib import image as image_ops
 from tensorflow_addons import image as image_ops
 
@@ -228,7 +229,7 @@ def rotate(image, degrees, replace):
     # it negatively half the time, but that's done on 'degrees' outside
     # of the function.
     image = wrap(image)
-    image = image_ops.rotate(image, radians)
+    image = image_ops.rotate(image, radians, fill_mode='constant')
     return unwrap(image, replace)
 
 
@@ -604,10 +605,10 @@ class RandAugment(ImageAugment):
             available_ops = [
                 'AutoContrast', 'Equalize', 'Invert',
                 'Rotate',
-                # 'Posterize',
-                # 'Solarize', 'Color', 'Contrast', 'Brightness', 'Sharpness',
-                # 'ShearX',
-                # 'ShearY', 'TranslateX', 'TranslateY', 'Cutout',
+                'Posterize',
+                'Solarize', 'Color', 'Contrast', 'Brightness', 'Sharpness',
+                'ShearX',
+                'ShearY', 'TranslateX', 'TranslateY', 'Cutout',
             ]
         self.available_ops = available_ops
         self.magnitude = magnitude
@@ -633,7 +634,6 @@ class RandAugment(ImageAugment):
 
             branch_fns = []
             for (i, op_name) in enumerate(self.available_ops):
-                print(op_name)
                 func, _, args = _parse_policy_info(op_name, prob, self.magnitude,
                                                    replace_value, self.cutout_const,
                                                    self.translate_const)
