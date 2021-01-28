@@ -45,6 +45,7 @@ if __name__ == '__main__':
     cross_entroy['s_on_l_old'] = tf.losses.CategoricalCrossentropy(
         reduction=tf.keras.losses.Reduction.SUM,
     )
+    shadow = tf.Variable(initial_value=tf.random.uniform(), trainable=False)
 
     # 2nd call student ------------------------------
     logits['s_on_l_new'] = student(l_images, training=True)
