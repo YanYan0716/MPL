@@ -82,7 +82,7 @@ def merge_dataset(label_data, unlabel_data):
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
-    # 有标签的数据集
+    # 有标签的数据集 batch_size=config.BATCH_SIZE
     df_label = pd.read_csv(config.LABEL_FILE_PATH)
     file_paths = df_label['file_name'].values
     labels = df_label['label'].values
@@ -92,12 +92,12 @@ if __name__ == '__main__':
         # print(data.keys())
         break
 
-    # 无标签的数据集
+    # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
     df_unlabel = pd.read_csv(config.UNLABEL_FILE_PATH)
     file_paths = df_unlabel['file_name'].values
     labels = df_unlabel['label'].values
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
-    ds_unlabel_train = ds_unlabel_train.map(unlabel_image, num_parallel_calls=AUTOTUNE).batch(1)
+    ds_unlabel_train = ds_unlabel_train.map(unlabel_image, num_parallel_calls=AUTOTUNE).batch(1*config.UDA_DATA)
 
     for data in ds_unlabel_train:
         # plt.figure(figsize=(10, 10))
@@ -119,13 +119,14 @@ if __name__ == '__main__':
         label = data[1]
         ori_images = data[2]
         aug_images = data[3]
-        # print(label)
-        plt.figure(figsize=(10, 10))
-        plt.subplot(1, 3, 1)
-        plt.imshow(label_img[0].numpy())
-        plt.subplot(1, 3, 2)
-        plt.imshow(ori_images[0].numpy())
-        plt.subplot(1, 3, 3)
-        plt.imshow(aug_images[0].numpy())
-        plt.show()
+        print(label)
+        print(label.shape)
+        # plt.figure(figsize=(10, 10))
+        # plt.subplot(1, 3, 1)
+        # plt.imshow(label_img[0].numpy())
+        # plt.subplot(1, 3, 2)
+        # plt.imshow(ori_images[0].numpy())
+        # plt.subplot(1, 3, 3)
+        # plt.imshow(aug_images[0].numpy())
+        # plt.show()
         break
