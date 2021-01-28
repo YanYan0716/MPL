@@ -1,12 +1,11 @@
 import tensorflow as tf
 
-
 from BatchNorm import BatchNorm
 from Conv2d import Conv2d
 
 
 class WrnBlock(tf.Module):
-    def __init__(self, num_inp_filters, num_out_filters, stride, training=True, name='wrn_block' ):
+    def __init__(self, num_inp_filters, num_out_filters, stride, training=True, name='wrn_block'):
         super().__init__(name=name)
         self.num_inp_filters = num_inp_filters
         self.num_out_filters = num_out_filters

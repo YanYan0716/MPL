@@ -15,4 +15,6 @@ NUM_CLASSES = 10
 
 # about training
 SAVE_EVERY = 1000
+
+# about UdaCrossEntroy
 UDA_DATA = 7

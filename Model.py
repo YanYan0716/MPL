@@ -23,20 +23,32 @@ class Wrn28k(tf.Module):
             num_out_filters=self.s[0],
             stride=1,
         )
-        self.wrn_block_1 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training, name='wrn_block_1')
-        self.wrn_block_2 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training, name='wrn_block_2')
-        self.wrn_block_3 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training, name='wrn_block_3')
-        self.wrn_block_4 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training, name='wrn_block_4')
+        self.wrn_block_1 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
+                                    name='wrn_block_1')
+        self.wrn_block_2 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
+                                    name='wrn_block_2')
+        self.wrn_block_3 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
+                                    name='wrn_block_3')
+        self.wrn_block_4 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
+                                    name='wrn_block_4')
 
-        self.wrn_block_5 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[2], stride=2, training=training, name='wrn_block_5')
-        self.wrn_block_6 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training, name='wrn_block_6')
-        self.wrn_block_7 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training, name='wrn_block_7')
-        self.wrn_block_8 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training, name='wrn_block_8')
+        self.wrn_block_5 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[2], stride=2, training=training,
+                                    name='wrn_block_5')
+        self.wrn_block_6 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
+                                    name='wrn_block_6')
+        self.wrn_block_7 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
+                                    name='wrn_block_7')
+        self.wrn_block_8 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
+                                    name='wrn_block_8')
 
-        self.wrn_block_9 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[3], stride=2, training=training, name='wrn_block_9')
-        self.wrn_block_10 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training, name='wrn_block_10')
-        self.wrn_block_11 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training, name='wrn_block_11')
-        self.wrn_block_12 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training, name='wrn_block_12')
+        self.wrn_block_9 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[3], stride=2, training=training,
+                                    name='wrn_block_9')
+        self.wrn_block_10 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
+                                     name='wrn_block_10')
+        self.wrn_block_11 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
+                                     name='wrn_block_11')
+        self.wrn_block_12 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
+                                     name='wrn_block_12')
 
         self.bn = BatchNorm(size=self.s[3], training=self.training)
         self.dense = Dense(num_inp_filters=self.s[3], num_out_filters=config.NUM_CLASSES)

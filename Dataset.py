@@ -4,13 +4,14 @@
 使用的第三方：pip install tensorflow-addons
 '''
 import os
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import warnings
+
 warnings.filterwarnings("ignore")
 import tensorflow as tf
 import pandas as pd
 import matplotlib.pyplot as plt
-
 
 import config
 import augment
@@ -23,7 +24,7 @@ def normalize_image(img, label):
     :param label:
     :return:
     '''
-    return tf.cast(img, tf.float32)/255.0, label
+    return tf.cast(img, tf.float32) / 255.0, label
 
 
 # 制作有标签的数据集
@@ -38,7 +39,7 @@ def label_image(img_file, label):
     img = tf.io.read_file(img_file)
     img = tf.image.decode_jpeg(img, channels=3)
     img = tf.image.random_flip_left_right(img)
-    img = tf.image.resize(img, (config.IMG_SIZE+5, config.IMG_SIZE+5))
+    img = tf.image.resize(img, (config.IMG_SIZE + 5, config.IMG_SIZE + 5))
     img = tf.image.random_crop(img, (config.IMG_SIZE, config.IMG_SIZE, 3))
     img = tf.cast(img, tf.float32) / 255.0
     # 对标签的处理
@@ -55,17 +56,17 @@ def unlabel_image(img_file, label):
     :return: 两张图片，一张经过轻微变换后的图片称为ori_image 一张经过较为剧烈变化后的图片，称为aug_images
     '''
     img = tf.io.read_file(img_file)
-    img = tf.image.decode_jpeg(img, channels=3 )
+    img = tf.image.decode_jpeg(img, channels=3)
     # img = tf.image.random_flip_left_right(img)
     ori_image = img  # 此图片作为原始图片
 
     aug = augment.RandAugment(
-        cutout_const=config.IMG_SIZE //8,
-        translate_const=config.IMG_SIZE //8,
+        cutout_const=config.IMG_SIZE // 8,
+        translate_const=config.IMG_SIZE // 8,
         magnitude=config.AUGMENT_MAGNITUDE,
     )
     aug_image = aug.distort(img)
-    aug_image = augment.cutout(aug_image, pad_size=config.IMG_SIZE//4, replace=128)
+    aug_image = augment.cutout(aug_image, pad_size=config.IMG_SIZE // 4, replace=128)
     aug_image = tf.image.random_flip_left_right(aug_image)
 
     aug_image = tf.cast(aug_image, tf.float32) / 255.0
@@ -128,5 +129,3 @@ if __name__ == '__main__':
         plt.imshow(aug_images[0].numpy())
         plt.show()
         break
-
-

@@ -2,7 +2,6 @@
 测试keras中定义的BN层和自己定义的BN层
 '''
 import os
-
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import tensorflow as tf
@@ -10,6 +9,7 @@ from tensorflow.keras import layers
 import numpy as np
 
 import config
+
 
 @tf.function
 def update(moving, normal):
@@ -48,13 +48,16 @@ class BatchNorm(tf.Module):
                 epsilon=config.BATCH_NORM_EPSILON,
                 is_training=True,
             )
-            self.moving_variance.assign(self.moving_variance*config.BATCH_NORM_DECAY+(1.0-config.BATCH_NORM_DECAY)*variance, use_locking=True)
-            self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean, use_locking=True)
+            self.moving_variance.assign(
+                self.moving_variance * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * variance,
+                use_locking=True)
+            self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean,
+                                    use_locking=True)
             return x
 
 
-def loss(input):
-    value = tf.reduce_mean(input+1)
+def loss(inp):
+    value = tf.reduce_mean(inp + 1)
     value = tf.expand_dims(value, axis=0)
     value = tf.expand_dims(value, axis=0)
     return value
@@ -67,7 +70,7 @@ if __name__ == '__main__':
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
 
     # 使用keras中的BN层
-    bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True,)
+    bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True, )
     model_k = tf.keras.Sequential()
     model_k.add(tf.keras.Input(shape=(None, None, 3)))
     model_k.add(bn)
@@ -93,6 +96,5 @@ if __name__ == '__main__':
         opt.apply_gradients(zip(grad, model_m.trainable_variables))
         print(Loss)
         print(model_m.moving_mean)
-
 
 '''https://arxiv.org/pdf/1502.03167v3.pdf'''
