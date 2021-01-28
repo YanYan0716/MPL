@@ -118,7 +118,7 @@ if __name__ == '__main__':
         label = data[1]
         ori_images = data[2]
         aug_images = data[3]
-        print(label)
+        # print(label)
         plt.figure(figsize=(10, 10))
         plt.subplot(1, 3, 1)
         plt.imshow(label_img[0].numpy())
