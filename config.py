@@ -16,6 +16,10 @@ NUM_CLASSES = 10
 # about training
 SAVE_EVERY = 1000
 MAX_STEP = 100
+UDA_WEIGHT = 8
+UDA_STEPS = 5000
+
+GLOBAL_STEP = 1
 
 # about UdaCrossEntroy
 UDA_DATA = 7
