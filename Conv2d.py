@@ -41,3 +41,16 @@ class Conv2d(tf.Module):
         if self.use_bias:
             x = tf.nn.bias_add(x, self.b, name='bias_add')
         return x
+
+
+if __name__ == '__main__':
+    # 使用自己定义的Conv2d层  use_bias=True有两个变量, 否则有1个
+    model = Conv2d(
+            num_inp_filters=3,
+            filter_size=1,
+            num_out_filters=4,
+            stride=1,
+            use_bias=True
+        )
+
+    print(len(model.trainable_variables))

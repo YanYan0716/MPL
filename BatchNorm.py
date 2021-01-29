@@ -67,16 +67,15 @@ if __name__ == '__main__':
     img = tf.convert_to_tensor(img, dtype=tf.float32)
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
 
-    # 使用自己定义的BN层
+    # 使用自己定义的BN层  有两个变量
     model_m = BatchNorm(3, training=True)
-    for i in range(2):
-        with tf.GradientTape() as tape:
-            output_m = model_m(img)
-            Loss = loss(output_m)
-            print(model_m.moving_mean)
-            print(model_m.moving_variance)
-        grad = tape.gradient(Loss, model_m.trainable_variables)
-        opt.apply_gradients(zip(grad, model_m.trainable_variables))
+    print(len(model_m.trainable_variables))
+    # for i in range(2):
+    #     with tf.GradientTape() as tape:
+    #         output_m = model_m(img)
+    #         Loss = loss(output_m)
+    #         print(model_m.moving_mean)
+    #         print(model_m.moving_variance)
+    #     grad = tape.gradient(Loss, model_m.trainable_variables)
+    #     opt.apply_gradients(zip(grad, model_m.trainable_variables))
         # print(model_m.trainable_variables)
-
-''''''

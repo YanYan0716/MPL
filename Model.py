@@ -79,5 +79,6 @@ class Wrn28k(tf.Module):
 if __name__ == '__main__':
     img = tf.random.normal([2, config.IMG_SIZE, config.IMG_SIZE, 3])
     model = Wrn28k(num_inp_filters=3, k=2)
-    output = model(x=img)
-    print(output.shape)
+    # output = model(x=img)
+    # print(output.shape)
+    print(model.trainable_variables[0].name)

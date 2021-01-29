@@ -35,12 +35,13 @@ class WrnBlock(tf.Module):
             stride=1,
             name='conv_3_2'
         )
-        self.residual = Conv2d(
-            num_inp_filters=self.num_inp_filters,
-            filter_size=1,
-            num_out_filters=self.num_out_filters,
-            stride=self.stride
-        )
+        if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+            self.residual = Conv2d(
+                num_inp_filters=self.num_inp_filters,
+                filter_size=1,
+                num_out_filters=self.num_out_filters,
+                stride=self.stride
+            )
 
     def __call__(self, x):
         residual_x = x
@@ -63,4 +64,4 @@ if __name__ == '__main__':
     img = tf.random.normal([1, 32, 32, 32])
     model = WrnBlock(num_inp_filters=32, num_out_filters=32, stride=1, training=True, name='wrn_block_1')
     output = model(img)
-    print(output.shape)
+    print(len(model.trainable_variables))
