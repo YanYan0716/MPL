@@ -10,9 +10,9 @@ import config
 from Model import Wrn28k
 
 
-def UdaCrossEntroy(all_logits, l_labels, global_step):
-    batch_size = 2  # config.BATCH_SIZE
-    uda_data = int(config.UDA_DATA)
+def UdaCrossEntroy(all_logits, l_labels):
+    batch_size = config.BATCH_SIZE
+    uda_data = config.UDA_DATA
     logits = {}
     labels = {}
     cross_entroy = {}
@@ -35,12 +35,12 @@ def UdaCrossEntroy(all_logits, l_labels, global_step):
     )(labels['l'], logits['l'])
 
     probs = tf.nn.softmax(logits['l'], axis=-1)  # 将每张图片对应10个类别的输出转化为概率的形式
-    correct_probs = tf.reduce_sum(labels['l']*probs, axis=-1)  # 根据图片对应的label和概率计算出 预测正确类别的概率
+    correct_probs = tf.reduce_sum(labels['l'] * probs, axis=-1)  # 根据图片对应的label和概率计算出 预测正确类别的概率
 
     # 计算一个阈值l_threshold
-    r = tf.cast(global_step, tf.float32) / tf.convert_to_tensor(float(config.MAX_STEP), dtype=tf.float32)
-    num_classes = tf.convert_to_tensor(int(config.NUM_CLASSES), tf.float32)
-    l_threshold = r*(1.-1./num_classes) + 1. / num_classes
+    r = tf.cast(config.GLOBAL_STEP, tf.float32) / tf.convert_to_tensor(config.MAX_STEPS, dtype=tf.float32)
+    num_classes = tf.convert_to_tensor(config.NUM_CLASSES, tf.float32)
+    l_threshold = r * (1. - 1. / num_classes) + 1. / num_classes
 
     masks['l'] = tf.math.less_equal(correct_probs, l_threshold)
     masks['l'] = tf.cast(masks['l'], tf.float32)
@@ -48,7 +48,7 @@ def UdaCrossEntroy(all_logits, l_labels, global_step):
     cross_entroy['l'] = tf.reduce_sum(cross_entroy['l']) / float(batch_size)
 
     # part2: 无监督部分
-    labels['ori'] = tf.nn.softmax( logits['ori'] / tf.convert_to_tensor(config.UDA_TEMP), axis=-1)
+    labels['ori'] = tf.nn.softmax(logits['ori'] / tf.convert_to_tensor(config.UDA_TEMP), axis=-1)
     labels['ori'] = tf.stop_gradient(labels['ori'])
     # tf.nn.log_softmax: 设一张图片对应3个类别的输出为o1，o2，o3 ==>
     # b = log(sum(exp(o1) + exp(o2) + exp(o3)))  new_o1=o1-b, new_o2=o2-b ... 恒负，大小关系不变
@@ -57,13 +57,13 @@ def UdaCrossEntroy(all_logits, l_labels, global_step):
     )
     largest_probs = tf.reduce_max(labels['ori'], axis=-1, keepdims=True)
 
-    masks['u'] = tf.math.greater_equal(largest_probs, tf.constant(float(config.UDA_THRESHOLD)))  # 判断最大概率是否大于阈值
+    masks['u'] = tf.math.greater_equal(largest_probs, tf.constant(config.UDA_THRESHOLD))  # 判断最大概率是否大于阈值
     masks['u'] = tf.cast(masks['u'], tf.float32)
     masks['u'] = tf.stop_gradient(masks['u'])
     # 极端情况，当ori的预测完全准确，即class i = 1, 其他类别为0时，
     # aug的class i最大，即最大的负数，两者相乘再取负，就是一个非常接近于0的数字
-    cross_entroy['u'] = tf.reduce_sum(-cross_entroy['u']*masks['u']) / \
-                        tf.convert_to_tensor((batch_size*uda_data), dtype=tf.float32)
+    cross_entroy['u'] = tf.reduce_sum(-cross_entroy['u'] * masks['u']) / \
+                        tf.convert_to_tensor((batch_size * uda_data), dtype=tf.float32)
 
     return logits, labels, masks, cross_entroy
 
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     teacher = Wrn28k(num_inp_filters=3, k=2)
     output = teacher(x=all_images)  # shape=[15, 10]
 
-    logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels, 10)
+    logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels)
     print('logits: ', logits.keys())
     print('labels: ', labels.keys())
     print('masks: ', masks.keys())
