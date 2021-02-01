@@ -80,6 +80,7 @@ def merge_dataset(label_data, unlabel_data):
 
 
 if __name__ == '__main__':
+
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
     # 有标签的数据集 batch_size=config.BATCH_SIZE
