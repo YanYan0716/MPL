@@ -54,12 +54,20 @@ if __name__ == '__main__':
     )
 
     # 定义teacher的优化函数
-    Tea_lr_fun = LearningRate(config.TEACHER_LR, config.TEACHER_LR_WARMUP_STEPS, config.)
-    TeaOptim = keras.optimizers.SGD(learning_rate=0.01)
+    Tea_lr_fun = LearningRate(
+        config.TEACHER_LR,
+        config.TEACHER_LR_WARMUP_STEPS,
+        config.TEACHER_NUM_WAIT_STEPS
+    )
+    # TeaOptim = keras.optimizers.SGD(learning_rate=0.01)
 
     # 定义student的优化函数
     # 定义student的学习率
-    Std_lr_fun = LearningRate(config.STUDENT_LR, config.STUDENT_LR_WARMUP_STEPS, config.STUDENT_LR_WAIT_STEPS)
+    Std_lr_fun = LearningRate(
+        config.STUDENT_LR,
+        config.STUDENT_LR_WARMUP_STEPS,
+        config.STUDENT_LR_WAIT_STEPS
+    )
     # StdOptim = keras.optimizers.SGD(learning_rate=0.01)
 
     for epoch in range(config.MAX_EPOCHS):
@@ -111,8 +119,8 @@ if __name__ == '__main__':
                     name='shadow_update'
                 )
             # 反向传播，更新student的参数-------
-            learn_rate = Std_lr_fun.__call__(global_step=config.GLOBAL_STEP)
-            StdOptim = keras.optimizers.SGD(learning_rate=learn_rate)
+            StudentLR = Std_lr_fun.__call__(global_step=config.GLOBAL_STEP)
+            StdOptim = keras.optimizers.SGD(learning_rate=StudentLR)
             GStud_unlabel = s_tape.gradient(cross_entroy['s_on_u'], student.trainable_variables)
             StdOptim.apply_gradients(zip(GStud_unlabel, student.trainable_variables))
 
@@ -145,6 +153,10 @@ if __name__ == '__main__':
             teacher_loss = cross_entroy['u']*config.UDA_WEIGHT + \
                            cross_entroy['l'] + \
                            cross_entroy['mpl']*dot_product
+
             # 反向传播，更新teacher的参数-------
+            TeacherLR = Tea_lr_fun.__call__(global_step=config.GLOBAL_STEP)
+            TeaOptim = keras.optimizers.SGD(learning_rate=TeacherLR)
             GTea = s_tape.gradient(teacher_loss, teacher.trainable_variables)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
+

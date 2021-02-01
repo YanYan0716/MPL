@@ -1,12 +1,11 @@
 import tensorflow as tf
 import tensorflow.keras as keras
 
-
 import config
 
 
 class LearningRate(object):
-    def __init__(self, initial_lr, num_warmup_steps, num_wait_steps):
+    def __init__(self, initial_lr, num_warmup_steps, num_wait_steps=None):
         if initial_lr is None:
             raise ValueError(f'initial_lr is error in learningRate file')
         if num_warmup_steps is None:
@@ -39,20 +38,21 @@ class LearningRate(object):
             raise ValueError(f'unknown lr_decay_type in config.py')
 
     def __call__(self, global_step):
+        global_step = global_step - self.num_wait_steps
         if config.LR_DECAY_TYPE == 'constant':
             learn_rate = self.lr
         else:
             learn_rate = self.lr.__call__(global_step)
-        r = (tf.cast(global_step+1), tf.float32) / tf.cast(self.num_warmup_steps, tf.float32)
+
+        r = (tf.cast(global_step + 1), tf.float32) / tf.cast(self.num_warmup_steps, tf.float32)
         warmup_lr = self.initial_lr * r
         lr = tf.cond(
             tf.cast(global_step, tf.int32) < tf.cast(self.num_warmup_steps, tf.float32),
-            lambda : warmup_lr,
-            lambda : learn_rate,
+            lambda: warmup_lr,
+            lambda: learn_rate,
         )
-        lr = tf.cond(global_step < 0, lambda :tf.constant(0., tf.float32), lambda :lr)
+        lr = tf.cond(global_step < 0, lambda: tf.constant(0., tf.float32), lambda: lr)
         return lr
-
 
 
 '''
