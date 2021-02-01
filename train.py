@@ -1,19 +1,20 @@
 import os
-
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = 2
 
 import tensorflow as tf
 from tensorflow import keras
-import numpy as np
+import pandas as pd
 
 import config
 from Model import Wrn28k
 from UdaCrossEntroy import UdaCrossEntroy
 from learningRate import LearningRate
+from Dataset import label_image
+from Dataset import unlabel_image
+from Dataset import merge_dataset
 
 
 if __name__ == '__main__':
-
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
     # 有标签的数据集 batch_size=config.BATCH_SIZE
@@ -21,72 +22,22 @@ if __name__ == '__main__':
     file_paths = df_label['file_name'].values
     labels = df_label['label'].values
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
-    ds_label_train = ds_label_train.map(label_image, num_parallel_calls=AUTOTUNE).batch(1)
-    for data in ds_label_train:
-        # print(data.keys())
-        break
+    ds_label_train = ds_label_train\
+        .map(label_image, num_parallel_calls=AUTOTUNE)\
+        .batch(config.BATCH_SIZE)
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
     df_unlabel = pd.read_csv(config.UNLABEL_FILE_PATH)
     file_paths = df_unlabel['file_name'].values
     labels = df_unlabel['label'].values
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
-    ds_unlabel_train = ds_unlabel_train.map(unlabel_image, num_parallel_calls=AUTOTUNE).batch(1 * config.UDA_DATA)
-
-    for data in ds_unlabel_train:
-        # plt.figure(figsize=(10, 10))
-        # aug_images = data['aug_images']
-        # ori_images = data['ori_images']
-        # plt.subplot(1, 2, 1)
-        # plt.imshow(aug_images[0].numpy())
-        # plt.subplot(1, 2, 2)
-        # plt.imshow(ori_images[0].numpy())
-        # plt.show()
-        break
+    ds_unlabel_train = ds_unlabel_train\
+        .map(unlabel_image, num_parallel_calls=AUTOTUNE)\
+        .batch(config.BATCH_SIZE * config.UDA_DATA)
 
     # 将有标签数据和无标签数据整合成最终的数据形式
     ds_train = tf.data.Dataset.zip((ds_label_train, ds_unlabel_train))
     ds_train = ds_train.map(merge_dataset)
-    for data in ds_train:
-        label_img = data[0]
-        print(label_img.shape)
-        label = data[1]
-        ori_images = data[2]
-        aug_images = data[3]
-        print(label)
-        print(label.shape)
-        # plt.figure(figsize=(10, 10))
-        # plt.subplot(1, 3, 1)
-        # plt.imshow(label_img[0].numpy())
-        # plt.subplot(1, 3, 2)
-        # plt.imshow(ori_images[0].numpy())
-        # plt.subplot(1, 3, 3)
-        # plt.imshow(aug_images[0].numpy())
-        # plt.show()
-        break
-
-
-
-
-    uda_data = int(config.UDA_DATA)
-    batch_size = 2
-    # np.random.seed(1)
-    # 制作数据集
-    ds_train = ',//'
-    l_images = np.random.random((batch_size, 32, 32, 3))
-    l_images = tf.convert_to_tensor(l_images, dtype=tf.float32)
-    ori_images = np.random.random((batch_size * config.UDA_DATA, 32, 32, 3))
-    ori_images = tf.convert_to_tensor(ori_images, dtype=tf.float32)
-    aug_images = np.random.random((batch_size * config.UDA_DATA, 32, 32, 3))
-    aug_images = tf.convert_to_tensor(aug_images, dtype=tf.float32)
-
-    all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [15, 32, 32, 3]
-    u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
-    # 标签
-    l_labels = np.array([2, 3])
-    l_labels = tf.convert_to_tensor(l_labels, dtype=tf.int32)
-    l_labels = tf.raw_ops.OneHot(indices=l_labels, depth=config.NUM_CLASSES, on_value=1.0, off_value=0)
-    # print(l_labels, l_labels.shape)
 
     # 构建teacher模型
     teacher = Wrn28k(num_inp_filters=3, k=2)
@@ -109,34 +60,27 @@ if __name__ == '__main__':
         from_logits=False,
     )
 
-    # 定义teacher的优化函数
+    # 定义teacher的学习率
     Tea_lr_fun = LearningRate(
         config.TEACHER_LR,
         config.TEACHER_LR_WARMUP_STEPS,
         config.TEACHER_NUM_WAIT_STEPS
     )
-    # TeaOptim = keras.optimizers.SGD(learning_rate=0.01)
-
-    # 定义student的优化函数
     # 定义student的学习率
     Std_lr_fun = LearningRate(
         config.STUDENT_LR,
         config.STUDENT_LR_WARMUP_STEPS,
         config.STUDENT_LR_WAIT_STEPS
     )
-    # StdOptim = keras.optimizers.SGD(learning_rate=0.01)
 
     for epoch in range(config.MAX_EPOCHS):
-        for batch_idx, (all_images, u_aug_and_l_images, l_labels)in enumerate(ds_train):
+        for batch_idx, (l_images, l_labels, ori_images, aug_images)in enumerate(ds_train):
+            all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [15, 32, 32, 3]
+            u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
             # step1：经过teacher，得到输出
             with tf.GradientTape() as t_tape:
                 output = teacher(x=all_images)  # shape=[15, 10]
                 logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels)
-            # ------打印teacher经过loss的输出------
-            # print('logits: ', logits.keys(), type(logits))
-            # print('labels: ', labels.keys(), type(labels))
-            # print('masks: ', masks.keys(), type(masks))
-            # print('cross entroy: ', cross_entroy.keys(), type(cross_entroy))
 
             # step2：1st call student -----------------------------
             with tf.GradientTape() as s_tape:
@@ -153,7 +97,7 @@ if __name__ == '__main__':
                 )
                 # 计算损失函数
                 cross_entroy['s_on_u'] = tf.reduce_sum(cross_entroy['s_on_u']) / \
-                                         tf.convert_to_tensor(batch_size*uda_data, dtype=tf.float32)
+                                         tf.convert_to_tensor(config.BATCH_SIZE*config.UDA_DATA, dtype=tf.float32)
 
                 # for taylor
                 cross_entroy['s_on_l_old'] = s_label_loss(
@@ -162,7 +106,7 @@ if __name__ == '__main__':
                 )
 
                 cross_entroy['s_on_l_old'] = tf.reduce_sum(cross_entroy['s_on_l_old']) / \
-                                             tf.convert_to_tensor(batch_size, dtype=tf.float32)
+                                             tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
                 shadow = tf.Variable(
                     initial_value=cross_entroy['s_on_l_old'],
                     trainable=False,
@@ -186,7 +130,7 @@ if __name__ == '__main__':
                 y_pred=logits['s_on_l_new']
             )
             cross_entroy['s_on_l_new'] = tf.reduce_sum(cross_entroy['s_on_l_new']) / \
-                                         tf.convert_to_tensor(batch_size, dtype=tf.float32)
+                                         tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
 
             dot_product = cross_entroy['s_on_l_new'] - shadow
             moving_dot_product = keras.initializers.GlorotNormal()(shape=dot_product.shape)
@@ -201,7 +145,7 @@ if __name__ == '__main__':
                 y_pred=logits['aug']
             )
             cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl'])/\
-                                  tf.convert_to_tensor(float(batch_size*uda_data), dtype=tf.float32)
+                                  tf.convert_to_tensor(config.BATCH_SIZE*config.UDA_DATA, dtype=tf.float32)
             uda_weight = config.UDA_WEIGHT * tf.math.minimum(
                 1., tf.cast(config.GLOBAL_STEP, tf.float32)/float(config.UDA_STEPS)
             )

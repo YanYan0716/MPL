@@ -57,7 +57,6 @@ def unlabel_image(img_file, label):
     '''
     img = tf.io.read_file(img_file)
     img = tf.image.decode_jpeg(img, channels=3)
-    # img = tf.image.random_flip_left_right(img)
     ori_image = img  # 此图片作为原始图片
 
     aug = augment.RandAugment(
