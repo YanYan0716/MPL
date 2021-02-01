@@ -144,7 +144,7 @@ if __name__ == '__main__':
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
                     1., tf.cast(config.GLOBAL_STEP, tf.float32)/float(config.UDA_STEPS)
                 )
-                teacher_loss = cross_entroy['u']*config.UDA_WEIGHT + \
+                teacher_loss = cross_entroy['u']*uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl']*dot_product
             # 反向传播，更新teacher的参数-------

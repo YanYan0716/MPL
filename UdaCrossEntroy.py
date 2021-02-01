@@ -44,7 +44,7 @@ def UdaCrossEntroy(all_logits, l_labels):
 
     masks['l'] = tf.math.less_equal(correct_probs, l_threshold)
     masks['l'] = tf.cast(masks['l'], tf.float32)
-    masks['l'] = tf.stop_gradient(masks['l'])  # 如果对某图片预测的概率小于l_threahold 就不计算梯度
+    masks['l'] = tf.stop_gradient(masks['l'])  # 如果对某图片预测的概率小于l_threahold,输出1，否则是0
     cross_entroy['l'] = tf.reduce_sum(cross_entroy['l']) / float(batch_size)
 
     # part2: 无监督部分
@@ -55,6 +55,7 @@ def UdaCrossEntroy(all_logits, l_labels):
     cross_entroy['u'] = (
             labels['ori'] * tf.nn.log_softmax(logits['aug'], axis=-1)
     )
+
     largest_probs = tf.reduce_max(labels['ori'], axis=-1, keepdims=True)
 
     masks['u'] = tf.math.greater_equal(largest_probs, tf.constant(config.UDA_THRESHOLD))  # 判断最大概率是否大于阈值
@@ -91,4 +92,4 @@ if __name__ == '__main__':
     print('logits: ', logits.keys())
     print('labels: ', labels.keys())
     print('masks: ', masks.keys())
-    print('cross entroy: ', cross_entroy.keys())
+    # print('cross entroy: ', cross_entroy)
