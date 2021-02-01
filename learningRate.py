@@ -44,10 +44,10 @@ class LearningRate(object):
         else:
             learn_rate = self.lr.__call__(global_step)
 
-        r = (tf.cast(global_step + 1), tf.float32) / tf.cast(self.num_warmup_steps, tf.float32)
+        r = tf.constant((global_step + 1), tf.float32) / tf.constant(self.num_warmup_steps, tf.float32)
         warmup_lr = self.initial_lr * r
         lr = tf.cond(
-            tf.cast(global_step, tf.int32) < tf.cast(self.num_warmup_steps, tf.float32),
+            tf.cast(global_step, tf.int32) < tf.cast(self.num_warmup_steps, tf.int32),
             lambda: warmup_lr,
             lambda: learn_rate,
         )

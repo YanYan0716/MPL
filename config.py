@@ -16,28 +16,28 @@ NUM_CLASSES = 10
 
 # about training
 SAVE_EVERY = 1000
-MAX_EPOCHS = 100
+MAX_EPOCHS = 1
 MAX_STEPS = MAX_EPOCHS*(DATA_LEN/BATCH_SIZE)
 
 UDA_WEIGHT = 8  #uda的权重
 UDA_STEPS = 5000
+GLOBAL_STEP = 1
 
 # about UdaCrossEntroy
-UDA_DATA = 7
+UDA_DATA = 5 # 7
 LABEL_SMOOTHING = 0.15
 UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
-GLOBAL_STEP = 1
 
 # about learning rate
 STUDENT_LR = 0.1  # student
 STUDENT_LR_WARMUP_STEPS = 5000
 STUDENT_LR_WAIT_STEPS = 3000
-STUDENT_LR_DECAY_TYPE = 'exponential'  # constant, exponential, cosine
 TEACHER_LR = 0.1  # teacher
 TEACHER_LR_WARMUP_STEPS = 5000
 TEACHER_NUM_WAIT_STEPS = 0
 
+LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
 NUM_DECAY_STEPS = 750
 LR_DECAY_RATE = 0.97
 
