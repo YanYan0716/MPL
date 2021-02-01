@@ -107,7 +107,6 @@ if __name__ == '__main__':
 
                 cross_entroy['s_on_l_old'] = tf.reduce_sum(cross_entroy['s_on_l_old']) / \
                                              tf.convert_to_tensor(batch_size, dtype=tf.float32)
-
                 shadow = tf.Variable(
                     initial_value=cross_entroy['s_on_l_old'],
                     trainable=False,
