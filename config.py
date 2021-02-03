@@ -15,7 +15,7 @@ DROPOUT_RATE = 0.2
 NUM_CLASSES = 11
 
 # about training
-LOG_EVERY = 100
+LOG_EVERY = 10
 SAVE_EVERY = 1000
 TEA_SAVE_PATH = './weights/T'
 STD_SAVE_PATH = './weights/S'
