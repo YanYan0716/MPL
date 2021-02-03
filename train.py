@@ -1,4 +1,5 @@
 import os
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import tensorflow as tf
@@ -13,7 +14,6 @@ from Dataset import label_image
 from Dataset import unlabel_image
 from Dataset import merge_dataset
 
-
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
@@ -22,8 +22,8 @@ if __name__ == '__main__':
     file_paths = df_label['file_name'].values
     labels = df_label['label'].values
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
-    ds_label_train = ds_label_train\
-        .map(label_image, num_parallel_calls=AUTOTUNE)\
+    ds_label_train = ds_label_train \
+        .map(label_image, num_parallel_calls=AUTOTUNE) \
         .batch(config.BATCH_SIZE)
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
@@ -31,8 +31,8 @@ if __name__ == '__main__':
     file_paths = df_unlabel['file_name'].values
     labels = df_unlabel['label'].values
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
-    ds_unlabel_train = ds_unlabel_train\
-        .map(unlabel_image, num_parallel_calls=AUTOTUNE)\
+    ds_unlabel_train = ds_unlabel_train \
+        .map(unlabel_image, num_parallel_calls=AUTOTUNE) \
         .batch(config.BATCH_SIZE * config.UDA_DATA)
 
     # 将有标签数据和无标签数据整合成最终的数据形式
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     )
 
     for epoch in range(config.MAX_EPOCHS):
-        for batch_idx, (l_images, l_labels, ori_images, aug_images)in enumerate(ds_train):
+        for batch_idx, (l_images, l_labels, ori_images, aug_images) in enumerate(ds_train):
             all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [15, 32, 32, 3]
             u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
             # step1：经过teacher，得到输出
@@ -95,7 +95,7 @@ if __name__ == '__main__':
                 )
                 # 计算损失函数
                 cross_entroy['s_on_u'] = tf.reduce_sum(cross_entroy['s_on_u']) / \
-                                         tf.convert_to_tensor(config.BATCH_SIZE*config.UDA_DATA, dtype=tf.float32)
+                                         tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=tf.float32)
                 # for taylor
                 cross_entroy['s_on_l_old'] = s_label_loss(
                     y_true=labels['l'],
@@ -130,7 +130,7 @@ if __name__ == '__main__':
             dot_product = cross_entroy['s_on_l_new'] - shadow
             moving_dot_product = keras.initializers.GlorotNormal()(shape=dot_product.shape)
             moving_dot_product = tf.Variable(initial_value=moving_dot_product, trainable=False, dtype=tf.float32)
-            moving_dot_product_update = moving_dot_product.assign_sub(0.01*(moving_dot_product-dot_product))
+            moving_dot_product_update = moving_dot_product.assign_sub(0.01 * (moving_dot_product - dot_product))
             dot_product = dot_product - moving_dot_product
             dot_product = tf.stop_gradient(dot_product)
             # step4: 求teacher的损失函数
@@ -140,17 +140,37 @@ if __name__ == '__main__':
                     y_pred=logits['aug']
                 )
                 cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl']) / \
-                                      tf.convert_to_tensor(config.BATCH_SIZE*config.UDA_DATA, dtype=tf.float32)
+                                      tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=tf.float32)
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
-                    1., tf.cast(config.GLOBAL_STEP, tf.float32)/float(config.UDA_STEPS)
+                    1., tf.cast(config.GLOBAL_STEP, tf.float32) / float(config.UDA_STEPS)
                 )
-                teacher_loss = cross_entroy['u']*uda_weight + \
+                teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
-                               cross_entroy['mpl']*dot_product
+                               cross_entroy['mpl'] * dot_product
             # 反向传播，更新teacher的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=config.GLOBAL_STEP)
             TeaOptim = keras.optimizers.SGD(learning_rate=TeacherLR)
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
-            break
-        break
+
+            if batch_idx % config.LOG_EVERY == 0:
+                print(f'batch: {batch_idx},[epoch: %4d/' % epoch + 'EPOCH: %4d] ' % config.MAX_EPOCHS
+                      + '[Teacher Loss: %.4f]' % teacher_loss + '/[Student Loss: %.4f]' % cross_entroy['s_on_u'])
+            if batch_idx % config.SAVE_EVERY == 0:
+                Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
+                Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
+
+                Tcheckpoint = tf.train.Checkpoint(model=teacher, optimizer=TeaOptim)
+                Scheckpoint = tf.train.Checkpoint(model=student, optimizer=StdOptim)
+
+                Tstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.TEA_SAVE_PATH))
+                Sstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.STD_SAVE_PATH))
+
+                Tstatus.assert_consumed()
+                Tcheckpoint.save(Tcheckpoint_prefix)
+
+                Sstatus.assert_consumed()
+                Scheckpoint.save(Scheckpoint_prefix)
+                print('saving checkpoint ...')
+
+

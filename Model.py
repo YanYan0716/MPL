@@ -81,4 +81,12 @@ if __name__ == '__main__':
     model = Wrn28k(num_inp_filters=3, k=2)
     # output = model(x=img)
     # print(output.shape)
-    print(model.trainable_variables[0].name)
+
+    checkpoint_dir = './weights'
+    checkpoint_prefix = checkpoint_dir + '/ckpt'
+
+    checkpoint = tf.train.Checkpoint(model=model)
+    status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+    status.assert_consumed()
+    checkpoint.save(checkpoint_prefix)
+    print('saving checkpoint ...')
