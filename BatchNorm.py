@@ -20,7 +20,7 @@ def update(moving, normal):
 
 class BatchNorm(tf.Module):
     def __init__(self, size, training, name='BatchNorm'):
-        super().__init__(name=name)
+        super(BatchNorm, self).__init__(name=name)
         self.size = size
         self.training = training
         self.gamma = tf.Variable(initial_value=tf.ones([self.size], dtype=tf.float32), trainable=True, name='gamma')
@@ -36,6 +36,7 @@ class BatchNorm(tf.Module):
             name='moving_variance'
         )
 
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
     def __call__(self, x):
         x = tf.cast(x, tf.float32)
         if self.training:
@@ -69,7 +70,10 @@ if __name__ == '__main__':
 
     # 使用自己定义的BN层  有两个变量
     model_m = BatchNorm(3, training=True)
-    print(len(model_m.trainable_variables))
+    # print(len(model_m.trainable_variables))
+
+    tf.saved_model.save(model_m, './weights')
+
     # for i in range(2):
     #     with tf.GradientTape() as tape:
     #         output_m = model_m(img)

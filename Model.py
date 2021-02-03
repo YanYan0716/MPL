@@ -14,7 +14,7 @@ class Wrn28k(tf.Module):
     '''搭建最终网络结构'''
 
     def __init__(self, num_inp_filters, k=2, name='Wrn_28_2', training=True):
-        super().__init__(name=name)
+        super(Wrn28k, self).__init__(name=name)
         self.training = training
         self.s = [16, 135, 135 * 2, 135 * 4] if k == 135 else [16 * k, 16 * k, 32 * k, 64 * k]
         self.conv2d = Conv2d(
@@ -53,6 +53,7 @@ class Wrn28k(tf.Module):
         self.bn = BatchNorm(size=self.s[3], training=self.training)
         self.dense = Dense(num_inp_filters=self.s[3], num_out_filters=config.NUM_CLASSES)
 
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, 32, 32, 3], dtype=tf.float32)])
     def __call__(self, x):
         x = self.conv2d(x)
         x = self.wrn_block_1(x)
@@ -77,7 +78,7 @@ class Wrn28k(tf.Module):
 
 
 if __name__ == '__main__':
-    img = tf.random.normal([2, config.IMG_SIZE, config.IMG_SIZE, 3])
+    img = tf.random.normal([1, config.IMG_SIZE, config.IMG_SIZE, 3])
     model = Wrn28k(num_inp_filters=3, k=2)
     # output = model(x=img)
     # print(output.shape)
@@ -85,8 +86,10 @@ if __name__ == '__main__':
     checkpoint_dir = './weights'
     checkpoint_prefix = checkpoint_dir + '/ckpt'
 
-    checkpoint = tf.train.Checkpoint(model=model)
-    status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-    status.assert_consumed()
-    checkpoint.save(checkpoint_prefix)
+    # checkpoint.model = model
+    # status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+    # status.assert_consumed()
+    # checkpoint.save(checkpoint_prefix)
+
+    tf.saved_model.save(model, './weights')
     print('saving checkpoint ...')

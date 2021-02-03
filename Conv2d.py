@@ -5,15 +5,10 @@ import tensorflow as tf
 import numpy as np
 
 
-def shared_weight(w, num_cores):
-    del num_cores
-    return w
-
-
 class Conv2d(tf.Module):
     def __init__(self, num_inp_filters, filter_size, num_out_filters, stride=1, use_bias=False, padding='SAME',
                  data_format='NHWC', name='conv2d', b=None):
-        super().__init__(name=name)
+        super(Conv2d, self).__init__(name=name)
         self.stride = stride
         self.padding = padding
         self.data_format = data_format
@@ -35,6 +30,7 @@ class Conv2d(tf.Module):
                     name='bias',
                 )
 
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
     def __call__(self, x):
         x = tf.nn.conv2d(x, self.w, strides=[1, self.stride, self.stride, 1], padding=self.padding,
                          data_format=self.data_format)
@@ -50,7 +46,7 @@ if __name__ == '__main__':
             filter_size=1,
             num_out_filters=4,
             stride=1,
-            use_bias=True
+            use_bias=False
         )
 
-    print(len(model.trainable_variables))
+    tf.saved_model.save(model, './weights')

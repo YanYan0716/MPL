@@ -166,7 +166,7 @@ if __name__ == '__main__':
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
-            if batch_idx % config.LOG_EVERY == 0:
+            if (batch_idx+1) % config.LOG_EVERY == 0:
                 TLOSS = TLOSS / config.LOG_EVERY
                 TLOSS_1 = TLOSS_1 / config.LOG_EVERY
                 TLOSS_2 = TLOSS_2 / config.LOG_EVERY
@@ -196,4 +196,4 @@ if __name__ == '__main__':
 
             Sstatus.assert_consumed()
             Scheckpoint.save(Scheckpoint_prefix)
-            print('saving checkpoint ...')
+            print(f'saving checkpoint for epoch {epoch}')
