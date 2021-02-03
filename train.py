@@ -181,19 +181,19 @@ if __name__ == '__main__':
                 TLOSS_2 = 0
                 TLOSS_3 = 0
                 SLOSS = 0
-            # if batch_idx % config.SAVE_EVERY == 0:
-            #     Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
-            #     Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
-            #
-            #     Tcheckpoint = tf.train.Checkpoint(model=teacher, optimizer=TeaOptim)
-            #     Scheckpoint = tf.train.Checkpoint(model=student, optimizer=StdOptim)
-            #
-            #     Tstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.TEA_SAVE_PATH))
-            #     Sstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.STD_SAVE_PATH))
-            #
-            #     Tstatus.assert_consumed()
-            #     Tcheckpoint.save(Tcheckpoint_prefix)
-            #
-            #     Sstatus.assert_consumed()
-            #     Scheckpoint.save(Scheckpoint_prefix)
-            #     print('saving checkpoint ...')
+            if epoch % config.SAVE_EVERY == 0:
+                Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
+                Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
+
+                Tcheckpoint = tf.train.Checkpoint(model=teacher, optimizer=TeaOptim)
+                Scheckpoint = tf.train.Checkpoint(model=student, optimizer=StdOptim)
+
+                Tstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.TEA_SAVE_PATH))
+                Sstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.STD_SAVE_PATH))
+
+                Tstatus.assert_consumed()
+                Tcheckpoint.save(Tcheckpoint_prefix)
+
+                Sstatus.assert_consumed()
+                Scheckpoint.save(Scheckpoint_prefix)
+                print('saving checkpoint ...')
