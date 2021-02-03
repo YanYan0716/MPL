@@ -1,7 +1,7 @@
 # about dataset
 IMG_SIZE = 32
 BATCH_SIZE = 32
-LABEL_FILE_PATH = '/content/food-11/labeled.csv'
+LABEL_FILE_PATH = '/content/food-11/labeled_1.csv'
 UNLABEL_FILE_PATH = '/content/food-11/unlabeled.csv'
 AUGMENT_MAGNITUDE = 16
 SHUFFLE_SIZE = BATCH_SIZE * 4
