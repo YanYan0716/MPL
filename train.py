@@ -157,9 +157,9 @@ if __name__ == '__main__':
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
             if batch_idx % config.LOG_EVERY == 0:
-                print(f'batch: %3d' % batch_idx + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
+                print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
                       + '[Teacher Loss: %.4f]' % teacher_loss + '/[Student Loss: %.4f]' % cross_entroy['s_on_u']
-                      + '\t[Teacher LR: %.6f' % TeacherLR + ']/[Student LR: %.6f]' % StudentLR)
+                      + '\t[Tea LR: %.6f' % TeacherLR + ']/[Stud LR: %.6f]' % StudentLR)
             # if batch_idx % config.SAVE_EVERY == 0:
             #     Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
             #     Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
