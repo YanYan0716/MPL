@@ -5,7 +5,7 @@ LABEL_FILE_PATH = '/content/food-11/labeled_1.csv'
 UNLABEL_FILE_PATH = '/content/food-11/unlabeled.csv'
 AUGMENT_MAGNITUDE = 16
 SHUFFLE_SIZE = BATCH_SIZE * 4
-DATA_LEN = 9867  # 数据集的总长度
+DATA_LEN = 1420  # 数据集的总长度
 
 # about model
 NUM_XLA_SHARDS = -1
