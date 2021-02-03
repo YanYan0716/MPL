@@ -76,6 +76,11 @@ if __name__ == '__main__':
     global_step = 0
 
     for epoch in range(config.MAX_EPOCHS):
+        TLOSS = 0
+        TLOSS_1 = 0
+        TLOSS_2 = 0
+        TLOSS_3 = 0
+        SLOSS = 0
         for batch_idx, (l_images, l_labels, ori_images, aug_images) in enumerate(ds_train):
             global_step += 1
             all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [15, 32, 32, 3]
@@ -99,6 +104,7 @@ if __name__ == '__main__':
                 # 计算损失函数
                 cross_entroy['s_on_u'] = tf.reduce_sum(cross_entroy['s_on_u']) / \
                                          tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=tf.float32)
+                SLOSS += cross_entroy['s_on_u']
                 # for taylor
                 cross_entroy['s_on_l_old'] = s_label_loss(
                     y_true=labels['l'],
@@ -150,6 +156,10 @@ if __name__ == '__main__':
                 teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl'] * dot_product
+                TLOSS += teacher_loss
+                TLOSS_1 += (cross_entroy['u'] * uda_weight)
+                TLOSS_2 += cross_entroy['l']
+                TLOSS_3 += cross_entroy['mpl'] * dot_product
             # 反向传播，更新teacher的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
             TeaOptim = keras.optimizers.SGD(learning_rate=TeacherLR)
@@ -157,9 +167,20 @@ if __name__ == '__main__':
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
             if batch_idx % config.LOG_EVERY == 0:
+                TLOSS = TLOSS / config.LOG_EVERY
+                TLOSS_1 = TLOSS_1 / config.LOG_EVERY
+                TLOSS_2 = TLOSS_2 / config.LOG_EVERY
+                TLOSS_3 = TLOSS_3 / config.LOG_EVERY
+                SLOSS = SLOSS / config.LOG_EVERY
                 print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
-                      + '[Teacher Loss: %.4f]' % teacher_loss + '/[Student Loss: %.4f]' % cross_entroy['s_on_u']
-                      + '\t[Tea LR: %.6f' % TeacherLR + ']/[Stud LR: %.6f]' % StudentLR)
+                      + '[TLoss: %.4f]' % TLOSS + '[unlabel:%.4f' % (TLOSS_1) + ', label: %.4f' % (
+                          TLOSS_2) + ', mpl: %.4f' % (TLOSS_3) + ']' + '/[SLoss: %.4f]' % SLOSS
+                      + '\t[TLR: %.6f' % TeacherLR + ']/[SLR: %.6f]' % StudentLR)
+                TLOSS = 0
+                TLOSS_1 = 0
+                TLOSS_2 = 0
+                TLOSS_3 = 0
+                SLOSS = 0
             # if batch_idx % config.SAVE_EVERY == 0:
             #     Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
             #     Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
