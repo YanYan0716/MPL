@@ -182,18 +182,9 @@ if __name__ == '__main__':
                 TLOSS_3 = 0
                 SLOSS = 0
         if epoch % config.SAVE_EVERY == 0:
-            Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
-            Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
+            Tsave_path = config.TEA_SAVE_PATH + str(epoch)+'_'+str(batch_idx)
+            Ssave_path = config.STD_SAVE_PATH + str(epoch)+'_'+str(batch_idx)
 
-            Tcheckpoint = tf.train.Checkpoint(model=teacher, optimizer=TeaOptim)
-            Scheckpoint = tf.train.Checkpoint(model=student, optimizer=StdOptim)
-
-            Tstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.TEA_SAVE_PATH))
-            Sstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.STD_SAVE_PATH))
-
-            Tstatus.assert_consumed()
-            Tcheckpoint.save(Tcheckpoint_prefix)
-
-            Sstatus.assert_consumed()
-            Scheckpoint.save(Scheckpoint_prefix)
-            print(f'saving checkpoint for epoch {epoch}')
+            tf.saved_model.save(teacher, Tsave_path)
+            tf.saved_model.save(student, Ssave_path)
+            print(f'saving for epoch {epoch}, Tpath:{Tsave_path}, Spath:{Ssave_path}')

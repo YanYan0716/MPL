@@ -90,6 +90,6 @@ if __name__ == '__main__':
     # status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
     # status.assert_consumed()
     # checkpoint.save(checkpoint_prefix)
-
+    print(model(img).shape)
     tf.saved_model.save(model, './weights')
     print('saving checkpoint ...')

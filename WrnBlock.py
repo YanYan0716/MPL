@@ -51,13 +51,13 @@ class WrnBlock(tf.Module):
             residual_x = x
         x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_1')
         x = self.conv2d_1(x)
-        # x = self.batch_norm_2(x)
-        # x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_2')
-        # x = self.conv2d_2(x)
-        # if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
-        #     residual_x = tf.nn.leaky_relu(residual_x, alpha=0.2, name='Lrelu_3')
-        #     residual_x = self.residual(residual_x)
-        # x = tf.math.add(x, residual_x)
+        x = self.batch_norm_2(x)
+        x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_2')
+        x = self.conv2d_2(x)
+        if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+            residual_x = tf.nn.leaky_relu(residual_x, alpha=0.2, name='Lrelu_3')
+            residual_x = self.residual(residual_x)
+        x = tf.math.add(x, residual_x)
         return x
 
 

@@ -11,7 +11,7 @@ class Dense(tf.Module):
         if self.use_bias:
             self.b = tf.Variable(tf.zeros([self.num_out_filters]), name='b')
 
-    @tf.function(input_signature=[tf.TensorSpec(shape=[None], dtype=tf.float32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None], dtype=tf.float32)])
     def __call__(self, x):
         x = tf.linalg.matmul(x, self.w)
         if self.use_bias:

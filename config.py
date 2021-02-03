@@ -11,16 +11,20 @@ DATA_LEN = 9867  # 数据集的总长度
 NUM_XLA_SHARDS = -1
 BATCH_NORM_EPSILON = 1e-3
 BATCH_NORM_DECAY = 0.99
-DROPOUT_RATE = 0.2
+DROPOUT_RATE = 0
 NUM_CLASSES = 10
 
 # about training
 LOG_EVERY = 10
 SAVE_EVERY = 10
-TEA_SAVE_PATH = './weights/T'
-STD_SAVE_PATH = './weights/S'
+TEA_SAVE_PATH = './weights/T_'
+STD_SAVE_PATH = './weights/S_'
 MAX_EPOCHS = 100
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
+
+# about testing
+TEST_FILE_PATH = '/content/food-11/test.csv'
+TEST_MODEL_PATH = './weights/S'
 
 UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 500
