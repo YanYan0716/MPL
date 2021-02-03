@@ -173,8 +173,8 @@ if __name__ == '__main__':
                 TLOSS_3 = TLOSS_3 / config.LOG_EVERY
                 SLOSS = SLOSS / config.LOG_EVERY
                 print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
-                      + '[TLoss: %.4f]' % TLOSS + '[unlabel:%.4f' % (TLOSS_1) + ', label: %.4f' % (
-                          TLOSS_2) + ', mpl: %.4f' % (TLOSS_3) + ']' + '/[SLoss: %.4f]' % SLOSS
+                      + '[U:%.4f' % (TLOSS_1) + ', L:%.4f' % (TLOSS_2) + ', M:%.4f' % (
+                          TLOSS_3) + ']' + '[TLoss: %.4f]' % TLOSS + '/[SLoss: %.4f]' % SLOSS
                       + '\t[TLR: %.6f' % TeacherLR + ']/[SLR: %.6f]' % StudentLR)
                 TLOSS = 0
                 TLOSS_1 = 0
