@@ -10,7 +10,7 @@ import config
 from Model import Wrn28k
 
 
-def UdaCrossEntroy(all_logits, l_labels):
+def UdaCrossEntroy(all_logits, l_labels, global_step):
     batch_size = config.BATCH_SIZE
     uda_data = config.UDA_DATA
     logits = {}
@@ -38,7 +38,7 @@ def UdaCrossEntroy(all_logits, l_labels):
     correct_probs = tf.reduce_sum(labels['l'] * probs, axis=-1)  # 根据图片对应的label和概率计算出 预测正确类别的概率
 
     # 计算一个阈值l_threshold
-    r = tf.cast(config.GLOBAL_STEP, tf.float32) / tf.convert_to_tensor(config.MAX_STEPS, dtype=tf.float32)
+    r = tf.cast(global_step, tf.float32) / tf.convert_to_tensor(config.MAX_STEPS, dtype=tf.float32)
     num_classes = tf.convert_to_tensor(config.NUM_CLASSES, tf.float32)
     l_threshold = r * (1. - 1. / num_classes) + 1. / num_classes
 

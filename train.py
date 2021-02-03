@@ -73,14 +73,17 @@ if __name__ == '__main__':
         config.STUDENT_LR_WAIT_STEPS
     )
 
+    global_step = 0
+
     for epoch in range(config.MAX_EPOCHS):
         for batch_idx, (l_images, l_labels, ori_images, aug_images) in enumerate(ds_train):
+            global_step += 1
             all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [15, 32, 32, 3]
             u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
             # step1：经过teacher，得到输出
             with tf.GradientTape() as t_tape:
                 output = teacher(x=all_images)  # shape=[15, 10]
-                logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels)
+                logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels, global_step)
             # step2：1st call student -----------------------------
             with tf.GradientTape() as s_tape:
                 logits['s_on_aug_and_l'] = student(x=u_aug_and_l_images)  # shape=[8, 10]
@@ -115,7 +118,7 @@ if __name__ == '__main__':
                     name='shadow_update'
                 )
             # 反向传播，更新student的参数-------
-            StudentLR = Std_lr_fun.__call__(global_step=config.GLOBAL_STEP)
+            StudentLR = Std_lr_fun.__call__(global_step=global_step)
             StdOptim = keras.optimizers.SGD(learning_rate=StudentLR)
             GStud_unlabel = s_tape.gradient(cross_entroy['s_on_u'], student.trainable_variables)
             StdOptim.apply_gradients(zip(GStud_unlabel, student.trainable_variables))
@@ -142,13 +145,13 @@ if __name__ == '__main__':
                 cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl']) / \
                                       tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=tf.float32)
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
-                    1., tf.cast(config.GLOBAL_STEP, tf.float32) / float(config.UDA_STEPS)
+                    1., tf.cast(global_step, tf.float32) / float(config.UDA_STEPS)
                 )
                 teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl'] * dot_product
             # 反向传播，更新teacher的参数-------
-            TeacherLR = Tea_lr_fun.__call__(global_step=config.GLOBAL_STEP)
+            TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
             TeaOptim = keras.optimizers.SGD(learning_rate=TeacherLR)
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
@@ -156,21 +159,21 @@ if __name__ == '__main__':
             if batch_idx % config.LOG_EVERY == 0:
                 print(f'batch: {batch_idx},[epoch: %4d/' % epoch + 'EPOCH: %4d] ' % config.MAX_EPOCHS
                       + '[Teacher Loss: %.4f]' % teacher_loss + '/[Student Loss: %.4f]' % cross_entroy['s_on_u'])
-            if batch_idx % config.SAVE_EVERY == 0:
-                Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
-                Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
-
-                Tcheckpoint = tf.train.Checkpoint(model=teacher, optimizer=TeaOptim)
-                Scheckpoint = tf.train.Checkpoint(model=student, optimizer=StdOptim)
-
-                Tstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.TEA_SAVE_PATH))
-                Sstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.STD_SAVE_PATH))
-
-                Tstatus.assert_consumed()
-                Tcheckpoint.save(Tcheckpoint_prefix)
-
-                Sstatus.assert_consumed()
-                Scheckpoint.save(Scheckpoint_prefix)
-                print('saving checkpoint ...')
+            # if batch_idx % config.SAVE_EVERY == 0:
+            #     Tcheckpoint_prefix = config.TEA_SAVE_PATH + '/ckpt'
+            #     Scheckpoint_prefix = config.STD_SAVE_PATH + '/ckpt'
+            #
+            #     Tcheckpoint = tf.train.Checkpoint(model=teacher, optimizer=TeaOptim)
+            #     Scheckpoint = tf.train.Checkpoint(model=student, optimizer=StdOptim)
+            #
+            #     Tstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.TEA_SAVE_PATH))
+            #     Sstatus = Tcheckpoint.restore(tf.train.latest_checkpoint(config.STD_SAVE_PATH))
+            #
+            #     Tstatus.assert_consumed()
+            #     Tcheckpoint.save(Tcheckpoint_prefix)
+            #
+            #     Sstatus.assert_consumed()
+            #     Scheckpoint.save(Scheckpoint_prefix)
+            #     print('saving checkpoint ...')
 
 

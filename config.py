@@ -5,7 +5,7 @@ LABEL_FILE_PATH = './dataset/label/data.csv'
 UNLABEL_FILE_PATH = './dataset/unlabel/data.csv'
 AUGMENT_MAGNITUDE = 16
 SHUFFLE_SIZE = BATCH_SIZE * 16
-DATA_LEN = 10 # 数据集的总长度
+DATA_LEN = 10  # 数据集的总长度
 
 # about model
 NUM_XLA_SHARDS = -1
@@ -19,15 +19,14 @@ LOG_EVERY = 100
 SAVE_EVERY = 1000
 TEA_SAVE_PATH = './weights/T'
 STD_SAVE_PATH = './weights/S'
-MAX_EPOCHS = 1
-MAX_STEPS = MAX_EPOCHS*(DATA_LEN/BATCH_SIZE)
+MAX_EPOCHS = 1000
+MAX_STEPS = MAX_EPOCHS * (DATA_LEN / BATCH_SIZE)
 
-UDA_WEIGHT = 8  #uda的权重
+UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 5000
-GLOBAL_STEP = 1
 
 # about UdaCrossEntroy
-UDA_DATA = 5 # 7
+UDA_DATA = 5  # 7
 LABEL_SMOOTHING = 0.15
 UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
