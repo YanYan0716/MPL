@@ -26,7 +26,7 @@ if __name__ == '__main__':
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
-        .batch(config.BATCH_SIZE)
+        .batch(config.BATCH_SIZE, drop_remainder=True)
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
     df_unlabel = pd.read_csv(config.UNLABEL_FILE_PATH)
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_unlabel_train = ds_unlabel_train \
         .map(unlabel_image, num_parallel_calls=AUTOTUNE) \
-        .batch(config.BATCH_SIZE * config.UDA_DATA)
+        .batch(config.BATCH_SIZE * config.UDA_DATA, drop_remainder=True)
 
     # 将有标签数据和无标签数据整合成最终的数据形式
     ds_train = tf.data.Dataset.zip((ds_label_train, ds_unlabel_train))
@@ -183,7 +183,7 @@ if __name__ == '__main__':
                 TLOSS_2 = 0
                 TLOSS_3 = 0
                 SLOSS = 0
-        # 测试student在test上的acc
+        # 测试student在test上的acc，当student开始训练的时候
         if (StudentLR > 0) and (epoch):
             acc = test(student)
             print(f'testing ... acc: {acc}')
