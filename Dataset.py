@@ -66,7 +66,7 @@ def unlabel_image(img_file, label):
         magnitude=config.AUGMENT_MAGNITUDE,
     )
     aug_image = aug.distort(img)
-    aug_image = augment.cutout(aug_image, pad_size=config.IMG_SIZE // 4, replace=128)
+    aug_image = augment.cutout(aug_image, pad_size=config.IMG_SIZE // 8, replace=128)
     aug_image = tf.image.random_flip_left_right(aug_image)
 
     aug_image = tf.cast(aug_image, tf.float32) / 255.0
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_label_train = ds_label_train\
         .map(label_image, num_parallel_calls=AUTOTUNE)\
-        .batch(1)
+        .batch(1).shuffle(1)
     for data in ds_label_train:
         # print(data.keys())
         break
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_unlabel_train = ds_unlabel_train\
         .map(unlabel_image, num_parallel_calls=AUTOTUNE)\
-        .batch(1*config.UDA_DATA)
+        .batch(1*config.UDA_DATA).shuffle(buffer_size=3)
 
     for data in ds_unlabel_train:
         # plt.figure(figsize=(10, 10))

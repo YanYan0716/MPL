@@ -42,6 +42,7 @@ class AutoAugmentTest(parameterized.TestCase):
         ('Brightness', 'Brightness'),
         ('Sharpness', 'Sharpness'))
     def test_image_processing_function(self, name):
+        # print(name)
         function, min_strength, _ = auto_augment._available_augmentations()[name]
         cifar_image_shape = [32, 32, 3]
         image = tf.zeros(cifar_image_shape, tf.uint8)

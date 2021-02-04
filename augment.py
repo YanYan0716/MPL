@@ -644,7 +644,6 @@ class RandAugment(ImageAugment):
                                    lambda: image)
 
                 branch_fns.append((i, branch_fn))
-
             image = tf.switch_case(branch_index=op_to_select, branch_fns=branch_fns)
 
         image = tf.cast(image, dtype=input_image_type)

@@ -4,8 +4,8 @@ BATCH_SIZE = 64
 # LABEL_FILE_PATH = '/content/cifar/label.csv'
 # UNLABEL_FILE_PATH = '/content/cifar/unlabel.csv'
 
-LABEL_FILE_PATH = 'D:/algorithm/MPL/dataset/labeled.csv'
-UNLABEL_FILE_PATH = 'D:/algorithm/MPL/dataset/unlabeled.csv'
+LABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/label/data.csv'
+UNLABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/unlabel/data.csv'
 
 
 AUGMENT_MAGNITUDE = 16
