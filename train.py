@@ -119,11 +119,6 @@ if __name__ == '__main__':
                     trainable=False,
                     name='cross_entroy_old'
                 )
-                shadow_update = tf.Variable(
-                    initial_value=cross_entroy['s_on_l_old'],
-                    trainable=False,
-                    name='shadow_update'
-                )
             # 反向传播，更新student的参数-------
             StudentLR = Std_lr_fun.__call__(global_step=global_step)
             StdOptim = keras.optimizers.SGD(learning_rate=StudentLR)

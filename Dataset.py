@@ -88,7 +88,9 @@ if __name__ == '__main__':
     file_paths = df_label['file_name'].values
     labels = df_label['label'].values
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
-    ds_label_train = ds_label_train.map(label_image, num_parallel_calls=AUTOTUNE).batch(1)
+    ds_label_train = ds_label_train\
+        .map(label_image, num_parallel_calls=AUTOTUNE)\
+        .batch(1)
     for data in ds_label_train:
         # print(data.keys())
         break
@@ -98,7 +100,9 @@ if __name__ == '__main__':
     file_paths = df_unlabel['file_name'].values
     labels = df_unlabel['label'].values
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
-    ds_unlabel_train = ds_unlabel_train.map(unlabel_image, num_parallel_calls=AUTOTUNE).batch(1*config.UDA_DATA)
+    ds_unlabel_train = ds_unlabel_train\
+        .map(unlabel_image, num_parallel_calls=AUTOTUNE)\
+        .batch(1*config.UDA_DATA)
 
     for data in ds_unlabel_train:
         # plt.figure(figsize=(10, 10))
