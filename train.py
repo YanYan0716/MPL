@@ -128,6 +128,7 @@ if __name__ == '__main__':
             StudentLR = Std_lr_fun.__call__(global_step=global_step)
             StdOptim = keras.optimizers.SGD(learning_rate=StudentLR)
             GStud_unlabel = s_tape.gradient(cross_entroy['s_on_u'], student.trainable_variables)
+            GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
             StdOptim.apply_gradients(zip(GStud_unlabel, student.trainable_variables))
             # step3: 2nd call student ------------------------------
             logits['s_on_l_new'] = student(l_images)
@@ -165,6 +166,7 @@ if __name__ == '__main__':
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
             TeaOptim = keras.optimizers.SGD(learning_rate=TeacherLR)
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
+            Gtea, _ =  tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
             if (batch_idx + 1) % config.LOG_EVERY == 0:

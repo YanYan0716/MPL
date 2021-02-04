@@ -24,6 +24,7 @@ MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 5000
 TEST_EVERY = 2
+GRAD_BOUND = 1e-9
 
 # about testing
 TEST_FILE_PATH = '/content/cifar/test.csv'

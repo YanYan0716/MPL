@@ -120,17 +120,17 @@ if __name__ == '__main__':
         print(data[1].shape)
         print(data[2].shape)
         print(data[3].shape)
-        # label = data[1]
-        # ori_images = data[2]
-        # aug_images = data[3]
-        # print(label)
-        # print(label.shape)
-        # plt.figure(figsize=(10, 10))
-        # plt.subplot(1, 3, 1)
-        # plt.imshow(label_img[0].numpy())
-        # plt.subplot(1, 3, 2)
-        # plt.imshow(ori_images[0].numpy())
-        # plt.subplot(1, 3, 3)
-        # plt.imshow(aug_images[0].numpy())
-        # plt.show()
+        label = data[1]
+        ori_images = data[2]
+        aug_images = data[3]
+        print(label)
+        print(label.shape)
+        plt.figure(figsize=(10, 10))
+        plt.subplot(1, 3, 1)
+        plt.imshow(label_img[0].numpy())
+        plt.subplot(1, 3, 2)
+        plt.imshow(ori_images[0].numpy())
+        plt.subplot(1, 3, 3)
+        plt.imshow(aug_images[0].numpy())
+        plt.show()
         break
