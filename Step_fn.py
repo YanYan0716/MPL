@@ -53,9 +53,9 @@ if __name__ == '__main__':
     )
 
     # 定义teacher的优化函数
-    TeaOptim = keras.optimizers.SGD(learning_rate=0.01)
+    TeaOptim = keras.optimizers.SGD(learning_rate=0.0)
     # 定义student的优化函数
-    StdOptim = keras.optimizers.SGD(learning_rate=0.01)
+    StdOptim = keras.optimizers.SGD(learning_rate=0.0)
 
     # 整个流程----------------------
     # step1：经过teacher，得到输出
@@ -104,6 +104,14 @@ if __name__ == '__main__':
             trainable=False,
             name='shadow_update'
         )
+        logits['test'] = student(l_images)
+        cross_entroy['test'] = s_label_loss(
+            y_true=labels['l'],
+            y_pred=logits['test']
+        )
+        cross_entroy['test'] = tf.reduce_sum(cross_entroy['test']) / \
+                                     tf.convert_to_tensor(batch_size, dtype=tf.float32)
+
     # 反向传播，更新student的参数-------
     GStud_unlabel = s_tape.gradient(cross_entroy['s_on_u'], student.trainable_variables)
     StdOptim.apply_gradients(zip(GStud_unlabel, student.trainable_variables))
@@ -123,20 +131,23 @@ if __name__ == '__main__':
     moving_dot_product_update = moving_dot_product.assign_sub(0.01*(moving_dot_product-dot_product))
     dot_product = dot_product - moving_dot_product
     dot_product = tf.stop_gradient(dot_product)
-
+    print('ok')
+    # print(cross_entroy['s_on_l_old'])
+    print(cross_entroy['s_on_l_new'])
+    print(cross_entroy['test'])
     # step4: 求teacher的损失函数
-    cross_entroy['mpl'] = mpl_loss(
-        y_true=tf.stop_gradient(tf.nn.softmax(logits['aug'], axis=-1)),
-        y_pred=logits['aug']
-    )
-    cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl'])/\
-                          tf.convert_to_tensor(float(batch_size*uda_data), dtype=tf.float32)
-    uda_weight = config.UDA_WEIGHT * tf.math.minimum(
-        1., tf.cast(config.GLOBAL_STEP, tf.float32)/float(config.UDA_STEPS)
-    )
-    teacher_loss = cross_entroy['u']*config.UDA_WEIGHT + \
-                   cross_entroy['l'] + \
-                   cross_entroy['mpl']*dot_product
-    # 反向传播，更新teacher的参数-------
-    GTea = s_tape.gradient(teacher_loss, teacher.trainable_variables)
-    TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
+    # cross_entroy['mpl'] = mpl_loss(
+    #     y_true=tf.stop_gradient(tf.nn.softmax(logits['aug'], axis=-1)),
+    #     y_pred=logits['aug']
+    # )
+    # cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl'])/\
+    #                       tf.convert_to_tensor(float(batch_size*uda_data), dtype=tf.float32)
+    # uda_weight = config.UDA_WEIGHT * tf.math.minimum(
+    #     1., tf.cast(config.GLOBAL_STEP, tf.float32)/float(config.UDA_STEPS)
+    # )
+    # teacher_loss = cross_entroy['u']*config.UDA_WEIGHT + \
+    #                cross_entroy['l'] + \
+    #                cross_entroy['mpl']*dot_product
+    # # 反向传播，更新teacher的参数-------
+    # GTea = s_tape.gradient(teacher_loss, teacher.trainable_variables)
+    # TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
