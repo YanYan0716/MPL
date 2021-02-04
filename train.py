@@ -15,7 +15,6 @@ from Dataset import unlabel_image
 from Dataset import merge_dataset
 from test import test
 
-
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
@@ -168,7 +167,7 @@ if __name__ == '__main__':
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
-            if (batch_idx+1) % config.LOG_EVERY == 0:
+            if (batch_idx + 1) % config.LOG_EVERY == 0:
                 TLOSS = TLOSS / config.LOG_EVERY
                 TLOSS_1 = TLOSS_1 / config.LOG_EVERY
                 TLOSS_2 = TLOSS_2 / config.LOG_EVERY
@@ -188,9 +187,9 @@ if __name__ == '__main__':
             acc = test(student)
             print(f'testing ... acc: {acc}')
         # 保存weights
-        if epoch % config.SAVE_EVERY == 0:
-            Tsave_path = config.TEA_SAVE_PATH + str(epoch)+'_'+str(batch_idx)
-            Ssave_path = config.STD_SAVE_PATH + str(epoch)+'_'+str(batch_idx)
+        if ((epoch + 1) % config.SAVE_EVERY == 0) and (StudentLR > 0):
+            Tsave_path = config.TEA_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
+            Ssave_path = config.STD_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
 
             tf.saved_model.save(teacher, Tsave_path)
             tf.saved_model.save(student, Ssave_path)

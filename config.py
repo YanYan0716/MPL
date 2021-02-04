@@ -22,7 +22,7 @@ STD_SAVE_PATH = './weights/S_'
 MAX_EPOCHS = 100
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
-UDA_STEPS = 2000
+UDA_STEPS = 5000
 TEST_EVERY = 2
 
 # about testing
@@ -36,11 +36,11 @@ UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
 
 # about learning rate
-STUDENT_LR = 0.1  # student
+STUDENT_LR = 0.01  # student
 STUDENT_LR_WARMUP_STEPS = 1000
-STUDENT_LR_WAIT_STEPS = 1500
-TEACHER_LR = 0.1  # teacher
-TEACHER_LR_WARMUP_STEPS = 1000
+STUDENT_LR_WAIT_STEPS = 3000
+TEACHER_LR = 0.01  # teacher
+TEACHER_LR_WARMUP_STEPS = 5000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
