@@ -13,6 +13,8 @@ from learningRate import LearningRate
 from Dataset import label_image
 from Dataset import unlabel_image
 from Dataset import merge_dataset
+from test import test
+
 
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
@@ -181,6 +183,11 @@ if __name__ == '__main__':
                 TLOSS_2 = 0
                 TLOSS_3 = 0
                 SLOSS = 0
+        # 测试student在test上的acc
+        if (StudentLR > 0) and (epoch):
+            acc = test(student)
+            print(f'testing ... acc: {acc}')
+        # 保存weights
         if epoch % config.SAVE_EVERY == 0:
             Tsave_path = config.TEA_SAVE_PATH + str(epoch)+'_'+str(batch_idx)
             Ssave_path = config.STD_SAVE_PATH + str(epoch)+'_'+str(batch_idx)
