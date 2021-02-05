@@ -19,7 +19,7 @@
 from typing import Dict
 from absl import flags
 import tensorflow as tf
-import auto_augment
+import self_aug_func
 
 FLAGS = flags.FLAGS
 
@@ -65,7 +65,7 @@ def auto_augmentation(example,
       An example with the same label and an augmented version of the image.
     """
     image, label = example['image'], example['label']
-    image = auto_augment.get_autoaugment_fn(dataset_name)(image)
+    image = self_aug_func.get_autoaugment_fn(dataset_name)(image)
     return {'image': image, 'label': label}
 
 

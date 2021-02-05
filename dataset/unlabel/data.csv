@@ -1,6 +1,6 @@
-﻿file_name,label
-E:\\Algorithm\\MPL\\dataset\\unlabel\\1.jpg,-1
-E:\\Algorithm\\MPL\\dataset\\unlabel\\2.jpg,-1
-E:\\Algorithm\\MPL\\dataset\\unlabel\\3.jpg,-1
-E:\\Algorithm\\MPL\\dataset\\unlabel\\4.jpg,-1
-E:\\Algorithm\\MPL\\dataset\\unlabel\\5.jpg,-1
+file_name,label
+.\\dataset\\unlabel\\1.jpg,-1
+.\\dataset\\unlabel\\2.jpg,-1
+.\\dataset\\unlabel\\3.jpg,-1
+.\\dataset\\unlabel\\4.jpg,-1
+.\\dataset\\unlabel\\5.jpg,-1

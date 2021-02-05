@@ -20,7 +20,7 @@ from absl.testing import absltest
 from absl.testing import parameterized
 import tensorflow as tf
 
-import auto_augment
+import self_aug_func
 
 
 class AutoAugmentTest(parameterized.TestCase):
@@ -43,7 +43,7 @@ class AutoAugmentTest(parameterized.TestCase):
         ('Sharpness', 'Sharpness'))
     def test_image_processing_function(self, name):
         # print(name)
-        function, min_strength, _ = auto_augment._available_augmentations()[name]
+        function, min_strength, _ = self_aug_func._available_augmentations()[name]
         cifar_image_shape = [32, 32, 3]
         image = tf.zeros(cifar_image_shape, tf.uint8)
         augmented_image = function(image, tf.cast(min_strength, tf.float32))
@@ -52,7 +52,7 @@ class AutoAugmentTest(parameterized.TestCase):
 
     @parameterized.named_parameters(('cifar', 'cifar10'), ('svhn', 'svhn'))
     def test_autoaugment_function(self, dataset_name):
-        autoaugment_fn = auto_augment.get_autoaugment_fn(dataset_name)
+        autoaugment_fn = self_aug_func.get_autoaugment_fn(dataset_name)
         image_shape = [32, 32, 3]  # Valid for cifar and svhn.
         image = tf.zeros(image_shape, tf.uint8)
         augmented_image = autoaugment_fn(image)
