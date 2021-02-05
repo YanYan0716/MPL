@@ -11,7 +11,7 @@ def _enhance_level_to_arg(level):
 
 
 def _translate_level_to_arg(level, translate_const):
-    level = (level / _MAX_LEVEL) * float(translate_const)
+    level = tf.convert_to_tensor((level / _MAX_LEVEL) * float(translate_const), tf.float32)
     should_flip = tf.cast(
         tf.floor(tf.random.uniform([]) + 0.5),
         tf.bool)  # 得到的结果为True和False
@@ -19,9 +19,8 @@ def _translate_level_to_arg(level, translate_const):
     return final_tensor
 
 
-@tf.function
 def _rotate_level_to_arg(level):
-    level = (level / _MAX_LEVEL) * 30
+    level = tf.convert_to_tensor((level / _MAX_LEVEL) * 30, tf.float32)
     should_filp = tf.cast(
         tf.floor(tf.random.uniform([]) + 0.5),
         tf.bool
@@ -31,7 +30,7 @@ def _rotate_level_to_arg(level):
 
 
 def _shear_level_to_arg(level):
-    level = (level / _MAX_LEVEL) * 0.3
+    level = tf.convert_to_tensor((level / _MAX_LEVEL) * 0.3, tf.float32)
     should_filp = tf.cast(
         tf.floor(tf.random.uniform([]) + 0.5),
         tf.bool
@@ -90,5 +89,5 @@ def level_to_arg(cutout_const, translate_const):
 
 if __name__ == '__main__':
     a = level_to_arg(4, 5)
-    b = a['Brightness'](4)
+    b = a['Rotate'](4)
     print(b)
