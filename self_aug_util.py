@@ -3,6 +3,8 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 
+from self_aug_func import *
+
 _MAX_LEVEL = 10
 
 
@@ -88,6 +90,33 @@ def level_to_arg(cutout_const, translate_const):
 
 
 if __name__ == '__main__':
-    a = level_to_arg(4, 5)
-    b = a['Rotate'](4)
-    print(b)
+    NAME_TO_FUNC = {
+        'AutoContrast': autocontrast,
+        'Equalize': equalize,
+        'Invert': invert,
+        'Rotate': rotate,
+        'Posterize': posterize,
+        'Solarize': solarize_arg,
+        'SolarizeAdd': solarize_add,
+        'Color': color,
+        'Contrast': contrast,
+        'Brightness': brightness,
+        'Sharpness': sharpness,
+        'ShearX': shear_x,
+        'ShearY': shear_y,
+        'TranslateX': translate_x,
+        'TranslateY': translate_y,
+        'Cutout': cutout,
+        'Identity': identity,
+    }
+
+    available_ops = [
+        'AutoContrast', 'Equalize', 'Invert', 'Rotate', 'Posterize',
+        'Solarize', 'Color', 'Contrast', 'Brightness', 'Sharpness',
+        'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Cutout',
+    ]
+
+    for (i, op_name) in enumerate(available_ops):
+        func = NAME_TO_FUNC[op_name]
+        args = level_to_arg(4, 4)[op_name](16)
+        print(args)

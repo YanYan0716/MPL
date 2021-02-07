@@ -3,12 +3,17 @@ IMG_SIZE = 32
 BATCH_SIZE = 64
 # LABEL_FILE_PATH = '/content/cifar/label.csv'
 # UNLABEL_FILE_PATH = '/content/cifar/unlabel.csv'
+_MAX_LEVEL = 10
+CUTOUT_CONST = 3
+TRANSLATE_CONST = 1.
+REPLACE_COLOR = [128, 128, 128]
+
 
 LABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/label/data.csv'
 UNLABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/unlabel/data.csv'
 
 
-AUGMENT_MAGNITUDE = 16
+AUGMENT_MAGNITUDE = 10
 SHUFFLE_SIZE = BATCH_SIZE * 4
 DATA_LEN = 7142  # 数据集的总长度
 

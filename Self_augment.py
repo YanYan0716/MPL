@@ -19,13 +19,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import warnings
 
 warnings.filterwarnings("ignore")
-import tensorflow.compat.v1 as tf
-import pandas as pd
-import matplotlib.pyplot as plt
 
-import config
-import augment
-from self_aug_util import level_to_arg
+import pandas as pd
+
+
 from self_aug_func import *
 
 # 将对图片做augment的函数变成一个字典
@@ -75,9 +72,9 @@ class RandAugment(object):
         self.translate_const = float(translate_const)
         if available_ops is None:
             available_ops = [
-                'AutoContrast', 'Equalize', 'Invert', 'Rotate', 'Posterize',
-                'Solarize', 'Color', 'Contrast', 'Brightness', 'Sharpness',
+                'AutoContrast', 'Equalize', 'Invert','Rotate','Posterize',
                 'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Cutout',
+                'Solarize', 'Color', 'Contrast', 'Brightness', 'Sharpness',
             ]
         self.available_ops = available_ops
         self.magnitude = magnitude
@@ -92,35 +89,22 @@ class RandAugment(object):
         image = tf.clip_by_value(image, tf.cast(0, input_image_type), tf.cast(255, input_image_type))
         image = tf.cast(image, tf.uint8)
 
-        replace_value = tf.constant([128, 128, 128], dtype=tf.int32)
         prob = tf.random.uniform([], 0.2, 0.8, tf.float32)
 
         op_list = []
         for _ in range(self.num_layers):
-            op_to_select = tf.random.uniform([], 0, int(len(self.available_ops)), dtype=tf.int32)
-            branch_fns = []
             for (i, op_name) in enumerate(self.available_ops):
+                aug_flag = 0
                 func = NAME_TO_FUNC[op_name]  # 得到函数名称
-                # args = level_to_arg(self.cutout_const, self.translate_const)[op_name](self.magnitude)  # 得到func函数中所需要的参数
-                # op_list.append(args)
-        #         # if op_name in REPLACE_FUNCS:
-        #         #     args = lambda args, replace_value :tuple(list(args) + [replace_value])
-        #
-        #         # 图像augment操作的实现
-        #         def branch_fn(selected_func=func, selected_args=args, image=image):
-        #             flag = tf.random.uniform([], 0., 1., prob.dtype)
-        #             some_image.append(flag.numpy())
-        #             if flag <= prob:
-        #                 image = selected_func(image, selected_args)
-        #             return image
-        #
-        #         branch_fns.append((i, branch_fn))
-        #     image = tf.switch_case(branch_index=op_to_select, branch_fns=branch_fns)
+
+                flag = tf.random.uniform([], 0., 1., prob.dtype)
+                op_list.append(tf.math.greater_equal(prob, flag))
+                if tf.math.greater_equal(prob, flag):
+                    if aug_flag <= 1:
+                        image = func(image)
+
         image = tf.cast(image, dtype=input_image_type)
         return image, tf.convert_to_tensor(op_list, dtype=tf.float32)
-
-
-### ==============================
 
 
 def unlabel_image(img_file, label):
@@ -146,6 +130,9 @@ def unlabel_image(img_file, label):
 
 
 if __name__ == '__main__':
+    # path = './100.jpg'
+    # result = unlabel_image(path, '1')
+    # print(result['some_info'])
     df_unlabel = pd.read_csv('./dataset/unlabel/data.csv')
     file_paths = df_unlabel['file_name'].values
     labels = df_unlabel['label'].values

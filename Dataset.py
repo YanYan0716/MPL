@@ -14,7 +14,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import config
-import augment
+# import augment
+from Self_augment import RandAugment
 
 
 def normalize_image(img, label):
@@ -60,13 +61,13 @@ def unlabel_image(img_file, label):
     img = tf.image.resize(img, (config.IMG_SIZE, config.IMG_SIZE))
     ori_image = img  # 此图片作为原始图片
 
-    aug = augment.RandAugment(
+    aug = RandAugment(
         cutout_const=config.IMG_SIZE // 8,
         translate_const=config.IMG_SIZE // 8,
         magnitude=config.AUGMENT_MAGNITUDE,
     )
     aug_image = aug.distort(img)
-    aug_image = augment.cutout(aug_image, pad_size=config.IMG_SIZE // 8, replace=128)
+    # aug_image = augment.cutout(aug_image, pad_size=config.IMG_SIZE // 8, replace=128)
     aug_image = tf.image.random_flip_left_right(aug_image)
 
     aug_image = tf.cast(aug_image, tf.float32) / 255.0
