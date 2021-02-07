@@ -1,16 +1,17 @@
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 64
-# LABEL_FILE_PATH = '/content/cifar/label.csv'
-# UNLABEL_FILE_PATH = '/content/cifar/unlabel.csv'
+BATCH_SIZE = 128
+LABEL_FILE_PATH = '/content/cifar/label.csv'
+UNLABEL_FILE_PATH = '/content/cifar/unlabel.csv'
+
 _MAX_LEVEL = 10
 CUTOUT_CONST = 3
 TRANSLATE_CONST = 1.
 REPLACE_COLOR = [128, 128, 128]
 
 
-LABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/label/data.csv'
-UNLABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/unlabel/data.csv'
+# LABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/label/data.csv'
+# UNLABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/unlabel/data.csv'
 
 
 AUGMENT_MAGNITUDE = 10
@@ -48,7 +49,7 @@ UDA_THRESHOLD = 0.6
 
 # about learning rate
 STUDENT_LR = 0.1  # student
-STUDENT_LR_WARMUP_STEPS = 1000
+STUDENT_LR_WARMUP_STEPS = 5000
 STUDENT_LR_WAIT_STEPS = 3000
 TEACHER_LR = 0.1  # teacher
 TEACHER_LR_WARMUP_STEPS = 5000
