@@ -1,6 +1,6 @@
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 LABEL_FILE_PATH = '/content/cifar/label.csv'
 UNLABEL_FILE_PATH = '/content/cifar/unlabel.csv'
 
@@ -30,12 +30,12 @@ LOG_EVERY = 20
 SAVE_EVERY = 5
 TEA_SAVE_PATH = './weights/T_'
 STD_SAVE_PATH = './weights/S_'
-MAX_EPOCHS = 100
+MAX_EPOCHS = 3000
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 5000
 TEST_EVERY = 2
-GRAD_BOUND = 1e-9
+GRAD_BOUND = 1e9
 
 # about testing
 TEST_FILE_PATH = '/content/cifar/test.csv'
