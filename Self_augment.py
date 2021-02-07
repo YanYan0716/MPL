@@ -91,20 +91,16 @@ class RandAugment(object):
 
         prob = tf.random.uniform([], 0.2, 0.8, tf.float32)
 
-        op_list = []
         for _ in range(self.num_layers):
             for (i, op_name) in enumerate(self.available_ops):
-                aug_flag = 0
                 func = NAME_TO_FUNC[op_name]  # 得到函数名称
 
                 flag = tf.random.uniform([], 0., 1., prob.dtype)
-                op_list.append(tf.math.greater_equal(prob, flag))
                 if tf.math.greater_equal(prob, flag):
-                    if aug_flag <= 1:
                         image = func(image)
 
         image = tf.cast(image, dtype=input_image_type)
-        return image, tf.convert_to_tensor(op_list, dtype=tf.float32)
+        return image
 
 
 def unlabel_image(img_file, label):
@@ -126,7 +122,7 @@ def unlabel_image(img_file, label):
     aug_image = tf.cast(aug_image, tf.float32) / 255.0
     ori_image = tf.cast(ori_image, tf.float32) / 255.0
 
-    return {'ori_images': ori_image, 'aug_images': aug_image, 'some_info':some_info}
+    return {'ori_images': ori_image, 'aug_images': aug_image}
 
 
 if __name__ == '__main__':
