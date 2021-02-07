@@ -92,12 +92,13 @@ class RandAugment(object):
         prob = tf.random.uniform([], 0.2, 0.8, tf.float32)
 
         for _ in range(self.num_layers):
+            op_to_select = tf.random.uniform([], minval=0, maxval=len(self.available_ops), dtype=tf.int32)
             for (i, op_name) in enumerate(self.available_ops):
                 func = NAME_TO_FUNC[op_name]  # 得到函数名称
-
-                flag = tf.random.uniform([], 0., 1., prob.dtype)
-                if tf.math.greater_equal(prob, flag):
-                        image = func(image)
+                if i == op_to_select:
+                    flag = tf.random.uniform([], 0., 1., prob.dtype)
+                    if tf.math.greater_equal(prob, flag):
+                            image = func(image)
 
         image = tf.cast(image, dtype=input_image_type)
         return image
