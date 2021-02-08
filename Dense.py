@@ -15,7 +15,7 @@ class Dense(tf.Module):
         self.num_inp_filters = num_inp_filters
         self.num_out_filters = num_out_filters
         self.use_bias = use_bias
-        init_range = 1. / tf.math.sqrt(self.num_out_filters)
+        init_range = 1. / tf.math.sqrt(tf.cast(self.num_out_filters, tf.float32))
         self.w = tf.Variable(
             tf.random.uniform(
                 shape=[self.num_inp_filters, self.num_out_filters],
