@@ -189,6 +189,10 @@ if __name__ == '__main__':
                 TLOSS_2 = 0
                 TLOSS_3 = 0
                 SLOSS = 0
+        # 测试teacher在test上的acc
+        if epoch % 5 == 0:
+            Tacc = test(teacher)
+            print(f'testing teacher model ... acc: {Tacc}')
         # 测试student在test上的acc，当student开始训练的时候
         if (StudentLR > 0) and (epoch):
             acc = test(student)
