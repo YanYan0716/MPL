@@ -72,6 +72,7 @@ class BatchNorm(tf.Module):
         return x
 
 
+
 def loss(input):
     value = tf.reduce_mean(input + 1)
     value = tf.expand_dims(value, axis=0)
