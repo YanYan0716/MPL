@@ -72,7 +72,6 @@ class BatchNorm(tf.Module):
         return x
 
 
-
 def loss(input):
     value = tf.reduce_mean(input + 1)
     value = tf.expand_dims(value, axis=0)
@@ -100,4 +99,4 @@ if __name__ == '__main__':
     #         print(model_m.moving_variance)
     #     grad = tape.gradient(Loss, model_m.trainable_variables)
     #     opt.apply_gradients(zip(grad, model_m.trainable_variables))
-        # print(model_m.trainable_variables)
+    # print(model_m.trainable_variables)

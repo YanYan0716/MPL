@@ -22,7 +22,6 @@ warnings.filterwarnings("ignore")
 
 import pandas as pd
 
-
 from self_aug_func import *
 
 # 将对图片做augment的函数变成一个字典
@@ -72,7 +71,7 @@ class RandAugment(object):
         self.translate_const = float(translate_const)
         if available_ops is None:
             available_ops = [
-                'AutoContrast', 'Equalize', 'Invert','Rotate','Posterize',
+                'AutoContrast', 'Equalize', 'Invert', 'Rotate', 'Posterize',
                 'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Cutout',
                 'Solarize', 'Color', 'Contrast', 'Brightness', 'Sharpness',
             ]
@@ -98,7 +97,7 @@ class RandAugment(object):
                 if i == op_to_select:
                     flag = tf.random.uniform([], 0., 1., prob.dtype)
                     if tf.math.greater_equal(prob, flag):
-                            image = func(image)
+                        image = func(image)
 
         image = tf.cast(image, dtype=input_image_type)
         return image

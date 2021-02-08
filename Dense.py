@@ -1,6 +1,5 @@
 import tensorflow as tf
 
-
 import config
 
 
@@ -35,4 +34,3 @@ class Dense(tf.Module):
         if self.use_bias:
             x = tf.nn.bias_add(x, self.b, name='bias_add')
         return x
-

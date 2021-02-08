@@ -45,10 +45,8 @@ class WrnBlock(tf.Module):
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
     def __call__(self, x):
-        self.batch_norm_1.training=self.training
-        self.batch_norm_2.training=self.training
-
-
+        self.batch_norm_1.training = self.training
+        self.batch_norm_2.training = self.training
         residual_x = x
         x = self.batch_norm_1(x)
         if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
@@ -74,4 +72,3 @@ if __name__ == '__main__':
     # print(len(model.trainable_variables))
 
     tf.saved_model.save(model, './weights')
-

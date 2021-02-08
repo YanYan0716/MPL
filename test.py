@@ -1,9 +1,9 @@
 import os
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import tensorflow as tf
 import pandas as pd
-
 
 import config
 
@@ -36,7 +36,7 @@ def test(student):
 
         if class_index == label:
             corrent_num += 1
-    accuracy = float(corrent_num)/float(total_num)*100.
+    accuracy = float(corrent_num) / float(total_num) * 100.
     student.training = True
     return accuracy
 
@@ -71,5 +71,5 @@ if __name__ == '__main__':
 
         if class_index == label:
             corrent_num += 1
-    accuracy = float(corrent_num)/float(total_num)*100.
-    print(f'test acc : %.3f'%{accuracy}+'%')
+    accuracy = float(corrent_num) / float(total_num) * 100.
+    print(f'test acc : %.3f' % {accuracy} + '%')

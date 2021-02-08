@@ -48,7 +48,7 @@ if __name__ == '__main__':
     for epoch in range(config.MAX_EPOCHS):
         SLOSS = 0
         for batch_idx, (data) in enumerate(ds_label_train):
-            teacher.training=True
+            teacher.training = True
             global_step += 1
             l_images = data['images']
             l_labels = data['labels']
@@ -76,7 +76,8 @@ if __name__ == '__main__':
             if (batch_idx + 1) % config.LOG_EVERY == 0:
                 SLOSS = SLOSS / config.LOG_EVERY
                 print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
-                      + '/[SLoss: %.4f]' % SLOSS + ' [SLR: %.6f]' % TeacherLR+'   %2d'%len(teacher.trainable_variables))
+                      + '/[SLoss: %.4f]' % SLOSS + ' [SLR: %.6f]' % TeacherLR + '   %2d' % len(
+                    teacher.trainable_variables))
                 SLOSS = 0
         # 测试student在test上的acc，当student开始训练的时候
         if (TeacherLR > 0) and (epoch % 5 == 0):

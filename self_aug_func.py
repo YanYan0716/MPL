@@ -127,9 +127,9 @@ def solarize_add(image, threahold=128):
     return image
 
 
-def color(image, degenetate = None):
+def color(image, degenetate=None):
     if degenetate is None:
-        degenerate  = tf.image.grayscale_to_rgb(tf.image.rgb_to_grayscale(image))
+        degenerate = tf.image.grayscale_to_rgb(tf.image.rgb_to_grayscale(image))
 
     factor = tf.cast((config.AUGMENT_MAGNITUDE / config._MAX_LEVEL) * 1.8 + 0.1, tf.float32)
 
@@ -214,7 +214,7 @@ def shear_x(image):
     )
     level = tf.cond(should_filp, lambda: level, lambda: -level)
 
-    new_size = tf.cast(config.IMG_SIZE*1.2, dtype=tf.int32)
+    new_size = tf.cast(config.IMG_SIZE * 1.2, dtype=tf.int32)
     image = tf.image.resize(image, (new_size, new_size))
     image = image_ops.shear_x(
         image,
@@ -234,7 +234,7 @@ def shear_y(image):
     )
     level = tf.cond(should_filp, lambda: level, lambda: -level)
 
-    new_size = tf.cast(config.IMG_SIZE*1.1, dtype=tf.int32)
+    new_size = tf.cast(config.IMG_SIZE * 1.1, dtype=tf.int32)
     image = tf.image.resize(image, (new_size, new_size))
     image = image_ops.shear_y(
         image,
