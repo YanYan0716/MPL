@@ -5,6 +5,14 @@ import tensorflow as tf
 import numpy as np
 
 
+import config
+
+
+def shared_weight(w, num_cores):
+    del num_cores
+    return w
+
+
 class Conv2d(tf.Module):
     def __init__(self, num_inp_filters, filter_size, num_out_filters, stride=1, use_bias=False, padding='SAME',
                  data_format='NHWC', name='conv2d', b=None):
@@ -21,7 +29,7 @@ class Conv2d(tf.Module):
             ),
             trainable=True,
         )
-
+        self.w = shared_weight(w=self.w, num_cores=config.NUM_XLA_SHARDS)
         if self.use_bias:
             if b is None:
                 self.b = tf.Variable(
@@ -29,6 +37,7 @@ class Conv2d(tf.Module):
                     trainable=True,
                     name='bias',
                 )
+                self.b = shared_weight(w=self.b, num_cores=config.NUM_XLA_SHARDS)
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
     def __call__(self, x):

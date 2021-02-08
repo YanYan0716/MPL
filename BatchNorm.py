@@ -11,6 +11,11 @@ import numpy as np
 import config
 
 
+def shared_weight(w, num_cores):
+    del num_cores
+    return w
+
+
 @tf.function
 def update(moving, normal):
     momentum = tf.cast(config.BATCH_NORM_DECAY, tf.float32)
@@ -24,7 +29,9 @@ class BatchNorm(tf.Module):
         self.size = size
         self.training = training
         self.gamma = tf.Variable(initial_value=tf.ones([self.size], dtype=tf.float32), trainable=True, name='gamma')
+        self.gamma = shared_weight(w=self.gamma, num_cores=config.NUM_XLA_SHARDS)
         self.bate = tf.Variable(initial_value=tf.zeros([self.size], dtype=tf.float32), trainable=True, name='bate')
+        self.bate = shared_weight(w=self.bate, num_cores=config.NUM_XLA_SHARDS)
         self.moving_mean = tf.Variable(
             initial_value=tf.zeros([self.size], dtype=tf.float32),
             trainable=False,
