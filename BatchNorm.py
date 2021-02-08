@@ -29,9 +29,9 @@ class BatchNorm(tf.Module):
         self.size = size
         self.training = training
         self.gamma = tf.Variable(initial_value=tf.ones([self.size], dtype=tf.float32), trainable=True, name='gamma')
-        self.gamma = shared_weight(w=self.gamma, num_cores=config.NUM_XLA_SHARDS)
+        # self.gamma = shared_weight(w=self.gamma, num_cores=config.NUM_XLA_SHARDS)
         self.bate = tf.Variable(initial_value=tf.zeros([self.size], dtype=tf.float32), trainable=True, name='bate')
-        self.bate = shared_weight(w=self.bate, num_cores=config.NUM_XLA_SHARDS)
+        # self.bate = shared_weight(w=self.bate, num_cores=config.NUM_XLA_SHARDS)
         self.moving_mean = tf.Variable(
             initial_value=tf.zeros([self.size], dtype=tf.float32),
             trainable=False,
@@ -59,7 +59,17 @@ class BatchNorm(tf.Module):
                 use_locking=True)
             self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean,
                                     use_locking=True)
-            return x
+        else:
+            x, _, _ = tf.compat.v1.nn.fused_batch_norm(
+                x,
+                scale=self.gamma,
+                offset=self.bate,
+                mean=self.moving_mean,
+                variance=self.moving_variance,
+                epsilon=config.BATCH_NORM_EPSILON,
+                is_training=False
+            )
+        return x
 
 
 def loss(input):

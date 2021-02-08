@@ -9,6 +9,7 @@ import config
 
 
 def test(student):
+    student.training = False
     # 准备数据
     df_label = pd.read_csv(config.TEST_FILE_PATH)
     file_paths = df_label['file_name'].values
@@ -36,6 +37,7 @@ def test(student):
         if class_index == label:
             corrent_num += 1
     accuracy = float(corrent_num)/float(total_num)*100.
+    student.training = True
     return accuracy
 
 

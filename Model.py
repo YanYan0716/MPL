@@ -55,6 +55,20 @@ class Wrn28k(tf.Module):
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, 32, 32, 3], dtype=tf.float32)])
     def __call__(self, x):
+        self.wrn_block_1.training = self.training
+        self.wrn_block_2.training = self.training
+        self.wrn_block_3.training = self.training
+        self.wrn_block_4.training = self.training
+        self.wrn_block_5.training = self.training
+        self.wrn_block_6.training = self.training
+        self.wrn_block_7.training = self.training
+        self.wrn_block_8.training = self.training
+        self.wrn_block_9.training = self.training
+        self.wrn_block_10.training = self.training
+        self.wrn_block_11.training = self.training
+        self.wrn_block_12.training = self.training
+        self.bn.training = self.training
+
         x = self.conv2d(x)
         x = self.wrn_block_1(x)
         x = self.wrn_block_2(x)
@@ -79,17 +93,19 @@ class Wrn28k(tf.Module):
 
 if __name__ == '__main__':
     img = tf.random.normal([1, config.IMG_SIZE, config.IMG_SIZE, 3])
-    model = Wrn28k(num_inp_filters=3, k=2)
-    # output = model(x=img)
+    model = Wrn28k(num_inp_filters=3, k=2, training=True)
+    model.training = False
+    # print(len(model.trainable_variables))
+    output = model(x=img)
     # print(output.shape)
 
-    checkpoint_dir = './weights'
-    checkpoint_prefix = checkpoint_dir + '/ckpt'
+    # checkpoint_dir = './weights'
+    # checkpoint_prefix = checkpoint_dir + '/ckpt'
 
     # checkpoint.model = model
     # status = checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
     # status.assert_consumed()
     # checkpoint.save(checkpoint_prefix)
-    print(model(img).shape)
-    tf.saved_model.save(model, './weights')
-    print('saving checkpoint ...')
+    # print(model(img).shape)
+    # tf.saved_model.save(model, './weights')
+    # print('saving checkpoint ...')

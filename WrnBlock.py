@@ -45,6 +45,10 @@ class WrnBlock(tf.Module):
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
     def __call__(self, x):
+        self.batch_norm_1.training=self.training
+        self.batch_norm_2.training=self.training
+
+
         residual_x = x
         x = self.batch_norm_1(x)
         if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
@@ -58,6 +62,7 @@ class WrnBlock(tf.Module):
             residual_x = tf.nn.leaky_relu(residual_x, alpha=0.2, name='Lrelu_3')
             residual_x = self.residual(residual_x)
         x = tf.math.add(x, residual_x)
+
         return x
 
 

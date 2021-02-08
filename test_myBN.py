@@ -39,10 +39,9 @@ class BatchNorm(tf.Module):
     def __call__(self, x):
         x = tf.cast(x, tf.float32)
         if self.training:
+            print('training')
             x, mean, variance = tf.compat.v1.nn.fused_batch_norm(
                 x=x,
-                # mean=self.moving_mean,
-                # variance=self.moving_variance,
                 offset=self.bate,
                 scale=self.gamma,
                 epsilon=config.BATCH_NORM_EPSILON,
@@ -53,6 +52,17 @@ class BatchNorm(tf.Module):
                 use_locking=True)
             self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean,
                                     use_locking=True)
+        else:
+            print('no training')
+            x, _, _ = tf.compat.v1.nn.fused_batch_norm(
+                x,
+                scale=self.gamma,
+                offset=self.bate,
+                mean=self.moving_mean,
+                variance=self.moving_variance,
+                epsilon=config.BATCH_NORM_EPSILON,
+                is_training=False
+            )
             return x
 
 
@@ -70,19 +80,19 @@ if __name__ == '__main__':
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
 
     # 使用keras中的BN层
-    bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True, )
-    model_k = tf.keras.Sequential()
-    model_k.add(tf.keras.Input(shape=(None, None, 3)))
-    model_k.add(bn)
-
-    for i in range(3):
-        with tf.GradientTape() as tape:
-            output_k = model_k(img, training=True)
-            Loss = loss(output_k)
-        grad = tape.gradient(Loss, model_k.trainable_weights)
-        opt.apply_gradients(zip(grad, model_k.trainable_weights))
-        print(Loss)
-        print(model_k.layers[0].weights[2])
+    # bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True, )
+    # model_k = tf.keras.Sequential()
+    # model_k.add(tf.keras.Input(shape=(None, None, 3)))
+    # model_k.add(bn)
+    #
+    # for i in range(3):
+    #     with tf.GradientTape() as tape:
+    #         output_k = model_k(img, training=True)
+    #         Loss = loss(output_k)
+    #     grad = tape.gradient(Loss, model_k.trainable_weights)
+    #     opt.apply_gradients(zip(grad, model_k.trainable_weights))
+    #     print(Loss)
+    #     print(model_k.layers[0].weights[2])
 
     print('-----------------')
     # 使用自己定义的BN层
@@ -90,11 +100,14 @@ if __name__ == '__main__':
     # print(model_m.trainable_variables)
     for i in range(3):
         with tf.GradientTape() as tape:
+            model_m.training=False
             output_m = model_m(img)
-            Loss = loss(output_m)
-        grad = tape.gradient(Loss, model_m.trainable_variables)
-        opt.apply_gradients(zip(grad, model_m.trainable_variables))
-        print(Loss)
-        print(model_m.moving_mean)
+            model_m.training=True
+            output_m = model_m(img)
+            # Loss = loss(output_m)
+        # grad = tape.gradient(Loss, model_m.trainable_variables)
+        # opt.apply_gradients(zip(grad, model_m.trainable_variables))
+        # print(Loss)
+        # print(model_m.moving_mean)
 
 '''https://arxiv.org/pdf/1502.03167v3.pdf'''

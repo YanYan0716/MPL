@@ -30,12 +30,13 @@ if __name__ == '__main__':
     # 构建模型
     teacher = Wrn28k(num_inp_filters=3, k=2)
 
-    # 损失函数，
+    # 定义损失函数，
     t_label_loss = tf.losses.CategoricalCrossentropy(
+        # reduction=tf.keras.losses.Reduction.NONE,
         from_logits=True,
     )
 
-    # 学习率
+    # 定义student的学习率
     Tea_lr_fun = LearningRate(
         config.TEACHER_LR,
         config.TEACHER_LR_WARMUP_STEPS,
@@ -45,10 +46,12 @@ if __name__ == '__main__':
     global_step = 0
 
     for epoch in range(config.MAX_EPOCHS):
+        SLOSS = 0
         for batch_idx, (data) in enumerate(ds_label_train):
+            teacher.training=True
+            global_step += 1
             l_images = data['images']
             l_labels = data['labels']
-            global_step += 1
             with tf.GradientTape() as s_tape:
                 logits = teacher(x=l_images)  # shape=[8, 10]
                 cross_entroy = t_label_loss(
@@ -56,15 +59,15 @@ if __name__ == '__main__':
                     y_pred=logits,
                 )
                 # 计算损失函数
-                cross_entroy = tf.reduce_sum(cross_entroy) / \
-                                         tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
+                # cross_entroy = tf.reduce_sum(cross_entroy) / \
+                #                          tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
                 SLOSS += cross_entroy
-            # 反向传播，更新参数-------
+            # 反向传播，更新student的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
             TeaOptim = keras.optimizers.SGD(
                 learning_rate=TeacherLR,
                 momentum=0.9,
-                nesterov=True,
+                # nesterov=True,
             )
             GStud_unlabel = s_tape.gradient(cross_entroy, teacher.trainable_variables)
             # GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
@@ -73,10 +76,10 @@ if __name__ == '__main__':
             if (batch_idx + 1) % config.LOG_EVERY == 0:
                 SLOSS = SLOSS / config.LOG_EVERY
                 print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
-                      + '/[SLoss: %.4f]' % SLOSS + ' [SLR: %.6f]' % TeacherLR)
+                      + '/[SLoss: %.4f]' % SLOSS + ' [SLR: %.6f]' % TeacherLR+'   %2d'%len(teacher.trainable_variables))
                 SLOSS = 0
         # 测试student在test上的acc，当student开始训练的时候
-        if (TeacherLR > 0) and (epoch%10==0):
+        if (TeacherLR > 0) and (epoch % 5 == 0):
             acc = test(teacher)
             print(f'testing ... acc: {acc}')
         # 保存weights
