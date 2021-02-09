@@ -39,19 +39,20 @@ class BatchNorm(tf.Module):
     def __call__(self, x):
         x = tf.cast(x, tf.float32)
         if self.training:
-            print('training')
-            x, mean, variance = tf.compat.v1.nn.fused_batch_norm(
+            mean, variance = tf.nn.moments(x, [0, 1, 2])
+            self.moving_variance.assign(
+                self.moving_variance * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * variance)
+            self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean)
+
+            x = tf.nn.batch_normalization(
                 x=x,
                 offset=self.bate,
                 scale=self.gamma,
-                epsilon=config.BATCH_NORM_EPSILON,
-                is_training=True,
+                mean=(self.moving_mean),
+                variance=(self.moving_variance),
+                variance_epsilon=config.BATCH_NORM_EPSILON,
             )
-            self.moving_variance.assign(
-                self.moving_variance * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * variance,
-                use_locking=True)
-            self.moving_mean.assign(self.moving_mean * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * mean,
-                                    use_locking=True)
+
         else:
             print('no training')
             x, _, _ = tf.compat.v1.nn.fused_batch_norm(
@@ -63,7 +64,7 @@ class BatchNorm(tf.Module):
                 epsilon=config.BATCH_NORM_EPSILON,
                 is_training=False
             )
-            return x
+        return x
 
 
 def loss(inp):

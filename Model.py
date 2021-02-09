@@ -97,6 +97,8 @@ if __name__ == '__main__':
     model.training = False
     # print(len(model.trainable_variables))
     output = model(x=img)
+    print(model.bn.moving_variance)
+    print(model.bn.moving_mean)
     # print(output.shape)
 
     # checkpoint_dir = './weights'

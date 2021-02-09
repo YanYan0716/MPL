@@ -64,9 +64,9 @@ if __name__ == '__main__':
                 SLOSS += cross_entroy
             # 反向传播，更新student的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            TeaOptim = keras.optimizers.SGD(
-                learning_rate=TeacherLR,
-                momentum=0.9,
+            TeaOptim = keras.optimizers.Adam(
+                learning_rate=0.001,
+                # momentum=0.9,
                 # nesterov=True,
             )
             GStud_unlabel = s_tape.gradient(cross_entroy, teacher.trainable_variables)
