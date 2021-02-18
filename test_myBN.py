@@ -39,6 +39,9 @@ class BatchNorm(tf.Module):
     def __call__(self, x):
         x = tf.cast(x, tf.float32)
         if self.training:
+            print('training')
+            print(self.gamma)
+            print(self.bate)
             mean, variance = tf.nn.moments(x, [0, 1, 2])
             self.moving_variance.assign(
                 self.moving_variance * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * variance)
@@ -55,6 +58,8 @@ class BatchNorm(tf.Module):
 
         else:
             print('no training')
+            print(self.gamma)
+            print(self.bate)
             x, _, _ = tf.compat.v1.nn.fused_batch_norm(
                 x,
                 scale=self.gamma,
@@ -101,13 +106,15 @@ if __name__ == '__main__':
     # print(model_m.trainable_variables)
     for i in range(3):
         with tf.GradientTape() as tape:
-            model_m.training=False
-            output_m = model_m(img)
             model_m.training=True
             output_m = model_m(img)
-            # Loss = loss(output_m)
-        # grad = tape.gradient(Loss, model_m.trainable_variables)
-        # opt.apply_gradients(zip(grad, model_m.trainable_variables))
+            Loss = loss(output_m)
+        grad = tape.gradient(Loss, model_m.trainable_variables)
+        opt.apply_gradients(zip(grad, model_m.trainable_variables))
+    model_m.training = False
+    output_m = model_m(img)
+    model_m.training = False
+    output_m = model_m(img)
         # print(Loss)
         # print(model_m.moving_mean)
 

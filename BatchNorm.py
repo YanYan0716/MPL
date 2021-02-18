@@ -56,8 +56,8 @@ class BatchNorm(tf.Module):
                 x=x,
                 offset=self.bate,
                 scale=self.gamma,
-                mean=mean,
-                variance=variance,
+                mean=self.moving_mean,
+                variance=self.moving_variance,
                 variance_epsilon=config.BATCH_NORM_EPSILON,
             )
             # x, mean, variance = tf.compat.v1.nn.fused_batch_norm(
