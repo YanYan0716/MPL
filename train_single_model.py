@@ -25,7 +25,8 @@ if __name__ == '__main__':
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
-        .batch(config.BATCH_SIZE, drop_remainder=True).shuffle()
+        .batch(config.BATCH_SIZE, drop_remainder=True)\
+        .shuffle(buffer_size=config.SHUFFLE_SIZE)
 
     # 构建模型
     teacher = Wrn28k(num_inp_filters=3, k=2)
