@@ -39,9 +39,6 @@ class BatchNorm(tf.Module):
     def __call__(self, x):
         x = tf.cast(x, tf.float32)
         if self.training:
-            print('training')
-            print(self.gamma)
-            print(self.bate)
             mean, variance = tf.nn.moments(x, [0, 1, 2])
             self.moving_variance.assign(
                 self.moving_variance * config.BATCH_NORM_DECAY + (1.0 - config.BATCH_NORM_DECAY) * variance)
@@ -52,22 +49,18 @@ class BatchNorm(tf.Module):
                 offset=self.bate,
                 scale=self.gamma,
                 mean=(self.moving_mean),
-                variance=(self.moving_variance),
+                variance=self.moving_variance,
                 variance_epsilon=config.BATCH_NORM_EPSILON,
             )
 
         else:
-            print('no training')
-            print(self.gamma)
-            print(self.bate)
-            x, _, _ = tf.compat.v1.nn.fused_batch_norm(
-                x,
-                scale=self.gamma,
+            x = tf.nn.batch_normalization(
+                x=x,
                 offset=self.bate,
-                mean=self.moving_mean,
+                scale=self.gamma,
+                mean=(self.moving_mean),
                 variance=self.moving_variance,
-                epsilon=config.BATCH_NORM_EPSILON,
-                is_training=False
+                variance_epsilon=config.BATCH_NORM_EPSILON,
             )
         return x
 
@@ -80,42 +73,56 @@ def loss(inp):
 
 
 if __name__ == '__main__':
-    # np.random.seed(1)
-    img = np.ones([1, 32, 32, 3])
+    np.random.seed(1)
+    img = np.random.random([1, 32, 32, 3])
     img = tf.convert_to_tensor(img, dtype=tf.float32)
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
 
     # 使用keras中的BN层
-    # bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99, trainable=True, )
-    # model_k = tf.keras.Sequential()
-    # model_k.add(tf.keras.Input(shape=(None, None, 3)))
-    # model_k.add(bn)
-    #
-    # for i in range(3):
-    #     with tf.GradientTape() as tape:
-    #         output_k = model_k(img, training=True)
-    #         Loss = loss(output_k)
-    #     grad = tape.gradient(Loss, model_k.trainable_weights)
-    #     opt.apply_gradients(zip(grad, model_k.trainable_weights))
-    #     print(Loss)
-    #     print(model_k.layers[0].weights[2])
+    bn = layers.BatchNormalization(epsilon=1e-3, momentum=0.99)
+    model_k = tf.keras.Sequential()
+    model_k.add(tf.keras.Input(shape=(None, None, 3)))
+    model_k.add(bn)
+
+    for i in range(3):
+        with tf.GradientTape() as tape:
+            output_k = model_k(img, training=True)
+            Loss = loss(output_k)
+        grad = tape.gradient(Loss, model_k.trainable_variables)
+        opt.apply_gradients(zip(grad, model_k.trainable_variables))
+        # print(Loss)
+        print('=====')
+        print(model_k.layers[0].weights[0])
+        print(model_k.layers[0].weights[1])
+        print(model_k.layers[0].weights[2])
+        print(model_k.layers[0].weights[3])
+    # model_k.layers[0].trainable=False
+    # output_k = model_k(img, training=False)
+    # Loss = loss(output_k)
+    # print(Loss)
 
     print('-----------------')
     # 使用自己定义的BN层
-    model_m = BatchNorm(3, training=True)
+    # model_m = BatchNorm(3, training=True)
     # print(model_m.trainable_variables)
-    for i in range(3):
-        with tf.GradientTape() as tape:
-            model_m.training=True
-            output_m = model_m(img)
-            Loss = loss(output_m)
-        grad = tape.gradient(Loss, model_m.trainable_variables)
-        opt.apply_gradients(zip(grad, model_m.trainable_variables))
-    model_m.training = False
-    output_m = model_m(img)
-    model_m.training = False
-    output_m = model_m(img)
-        # print(Loss)
-        # print(model_m.moving_mean)
+    # for i in range(3):
+    #     with tf.GradientTape() as tape:
+    #         model_m.training=True
+    #         output_m = model_m(img)
+    #         Loss = loss(output_m)
+    #     grad = tape.gradient(Loss, model_m.trainable_variables)
+    #     opt.apply_gradients(zip(grad, model_m.trainable_variables))
+    #     print('====')
+    #     print(model_m.gamma)
+    #     print(model_m.bate)
+    #     print(model_m.moving_mean)
+    #     print(model_m.moving_variance)
+    # model_m.training = False
+    # output_m = model_m(img)
+    # Loss = loss(output_m)
+    # print(Loss)
+    # model_m.training = False
+    # output_m = model_m(img)
+
 
 '''https://arxiv.org/pdf/1502.03167v3.pdf'''
