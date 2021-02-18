@@ -37,7 +37,7 @@ if __name__ == '__main__':
         from_logits=True,
     )
 
-    # 定义student的学习率
+    # 定义学习率
     Tea_lr_fun = LearningRate(
         config.TEACHER_LR,
         config.TEACHER_LR_WARMUP_STEPS,
@@ -63,7 +63,7 @@ if __name__ == '__main__':
                 # cross_entroy = tf.reduce_sum(cross_entroy) / \
                 #                          tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
                 SLOSS += cross_entroy
-            # 反向传播，更新student的参数-------
+            # 反向传播，更新参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
             TeaOptim = keras.optimizers.SGD(
                 learning_rate=TeacherLR,
@@ -77,10 +77,10 @@ if __name__ == '__main__':
             if (batch_idx + 1) % config.LOG_EVERY == 0:
                 SLOSS = SLOSS / config.LOG_EVERY
                 print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
-                      + '/[SLoss: %.4f]' % SLOSS + ' [SLR: %.6f]' % TeacherLR + '   %2d' % len(
+                      + '/[Loss: %.4f]' % SLOSS + ' [LR: %.6f]' % TeacherLR + '   %2d' % len(
                     teacher.trainable_variables))
                 SLOSS = 0
-        # 测试student在test上的acc，当student开始训练的时候
+        # 测试test上的acc
         if (TeacherLR > 0) and (epoch % 5 == 0):
             acc = test(teacher)
             print(f'testing ... acc: {acc}')
