@@ -154,8 +154,8 @@ if __name__ == '__main__':
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
                     1., tf.cast(global_step, tf.float32) / float(config.UDA_STEPS)
                 )
-                if StudentLR == 0:
-                    dot_product = 0
+                # if StudentLR == 0:
+                #     dot_product = 0
                 teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl'] * dot_product
@@ -194,14 +194,14 @@ if __name__ == '__main__':
             Tacc = test(teacher)
             print(f'testing teacher model ... acc: {Tacc}')
         # 测试student在test上的acc，当student开始训练的时候
-        if (StudentLR > 0) and (epoch):
+        if (StudentLR > 0) and (epoch%5==0):
             acc = test(student)
             print(f'testing ... acc: {acc}')
         # 保存weights
-        if ((epoch + 1) % config.SAVE_EVERY == 0) and (StudentLR > 0):
-            Tsave_path = config.TEA_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
-            Ssave_path = config.STD_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
-
-            tf.saved_model.save(teacher, Tsave_path)
-            tf.saved_model.save(student, Ssave_path)
-            print(f'saving for epoch {epoch}, Tpath:{Tsave_path}, Spath:{Ssave_path}')
+        # if ((epoch + 1) % config.SAVE_EVERY == 0) and (StudentLR > 0):
+        #     Tsave_path = config.TEA_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
+        #     Ssave_path = config.STD_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
+        #
+        #     tf.saved_model.save(teacher, Tsave_path)
+        #     tf.saved_model.save(student, Ssave_path)
+        #     print(f'saving for epoch {epoch}, Tpath:{Tsave_path}, Spath:{Ssave_path}')

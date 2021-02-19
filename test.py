@@ -16,7 +16,7 @@ def test(student):
     labels = df_label['label'].values
 
     # testing
-    total_num = len(labels)
+    total_num = len(labels)/2
     corrent_num = 0
     for i in range(total_num):
         img_file = file_paths[i]
