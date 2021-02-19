@@ -6,17 +6,19 @@ import tensorflow as tf
 from tensorflow import keras
 import pandas as pd
 
-import config
 from Model import Wrn28k
-from UdaCrossEntroy import UdaCrossEntroy
 from learningRate import LearningRate
 from Dataset import label_image
-from Dataset import unlabel_image
-from Dataset import merge_dataset
 from test import test
 
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
+    BATCH_SIZE = 64
+    MAX_EPOCHS = 3000
+    TEACHER_LR = 0.1
+    TEACHER_LR_WARMUP_STEPS = 3000
+    TEACHER_NUM_WAIT_STEPS = 0
+    LOG_EVERY = 40
 
     # 有标签的数据集 batch_size=config.BATCH_SIZE
     df_label = pd.read_csv('/content/cifar/unlabel.csv')
@@ -25,8 +27,8 @@ if __name__ == '__main__':
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
-        .batch(config.BATCH_SIZE, drop_remainder=True)\
-        .shuffle(buffer_size=config.SHUFFLE_SIZE)
+        .batch(BATCH_SIZE, drop_remainder=True)\
+        .shuffle(buffer_size=BATCH_SIZE*16)
 
     # 构建模型
     teacher = Wrn28k(num_inp_filters=3, k=2)
@@ -39,14 +41,14 @@ if __name__ == '__main__':
 
     # 定义学习率
     Tea_lr_fun = LearningRate(
-        config.TEACHER_LR,
-        config.TEACHER_LR_WARMUP_STEPS,
-        config.TEACHER_NUM_WAIT_STEPS
+        TEACHER_LR,
+        TEACHER_LR_WARMUP_STEPS,
+        TEACHER_NUM_WAIT_STEPS
     )
 
     global_step = 0
 
-    for epoch in range(config.MAX_EPOCHS):
+    for epoch in range(MAX_EPOCHS):
         SLOSS = 0
         for batch_idx, (data) in enumerate(ds_label_train):
             teacher.training = True
@@ -60,24 +62,24 @@ if __name__ == '__main__':
                     y_pred=logits,
                 )
                 # 计算损失函数
-                cross_entroy = tf.reduce_sum(cross_entroy) / \
-                                         tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
+                # cross_entroy = tf.reduce_sum(cross_entroy) / \
+                #                          tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
                 SLOSS += cross_entroy
             # 反向传播，更新参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            TeaOptim = keras.optimizers.SGD(
-                learning_rate=TeacherLR,
-                momentum=0.9,
-                nesterov=True,
-            )
-            # TeaOptim = keras.optimizers.Adam(lr=3e-4)
+            # TeaOptim = keras.optimizers.SGD(
+            #     learning_rate=TeacherLR,
+            #     momentum=0.9,
+            #     # nesterov=True,
+            # )
+            TeaOptim = keras.optimizers.Adam(lr=3e-4)
             GStud_unlabel = s_tape.gradient(cross_entroy, teacher.trainable_variables)
-            GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
+            # GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GStud_unlabel, teacher.trainable_variables))
 
-            if (batch_idx + 1) % config.LOG_EVERY == 0:
-                SLOSS = SLOSS / config.LOG_EVERY
-                print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
+            if (batch_idx + 1) % LOG_EVERY == 0:
+                SLOSS = SLOSS / LOG_EVERY
+                print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % MAX_EPOCHS
                       + '/[Loss: %.4f]' % SLOSS + ' [LR: %.6f]' % TeacherLR + '   %2d' % len(
                     teacher.trainable_variables))
                 SLOSS = 0
