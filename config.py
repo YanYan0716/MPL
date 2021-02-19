@@ -56,7 +56,7 @@ TEACHER_LR_WARMUP_STEPS = 5000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
-NUM_DECAY_STEPS = 1500
+NUM_DECAY_STEPS = 3000
 LR_DECAY_RATE = 0.97
 
 # about optimizer

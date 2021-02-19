@@ -49,18 +49,19 @@ if __name__ == '__main__':
 
     # 定义teacher的损失函数，损失函数之一为UdaCrossEntroy
     mpl_loss = tf.losses.CategoricalCrossentropy(
-        reduction=tf.losses.Reduction.NONE
+        reduction=tf.losses.Reduction.NONE,
+        from_logits=True,
     )
     # 定义student的损失函数， PS：teacher的损失函数为UdaCrossEntroy
     s_unlabel_loss = tf.losses.CategoricalCrossentropy(
         label_smoothing=config.LABEL_SMOOTHING,
-        from_logits=False,
+        from_logits=True,
         reduction=tf.keras.losses.Reduction.NONE,
     )
 
     s_label_loss = tf.losses.CategoricalCrossentropy(
         reduction=tf.keras.losses.Reduction.NONE,
-        from_logits=False,
+        from_logits=True,
     )
 
     # 定义teacher的学习率

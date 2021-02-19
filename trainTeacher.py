@@ -97,7 +97,6 @@ if __name__ == '__main__':
                 TLOSS_1 = TLOSS_1 / config.LOG_EVERY
                 TLOSS_2 = TLOSS_2 / config.LOG_EVERY
                 TLOSS_3 = TLOSS_3 / config.LOG_EVERY
-                SLOSS = SLOSS / config.LOG_EVERY
                 print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
                       + '[U:%.4f' % (TLOSS_1) + ', L:%.4f' % (TLOSS_2) + ', M:%.4f' % (
                           TLOSS_3) + ']' + '[TLoss: %.4f]' % TLOSS
