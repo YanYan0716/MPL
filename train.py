@@ -43,9 +43,16 @@ if __name__ == '__main__':
     ds_train = ds_train.map(merge_dataset)
 
     # 构建teacher模型
-    teacher = Wrn28k(num_inp_filters=3, k=2)
+    if config.TEA_CONTINUE:
+        teacher = tf.saved_model.load(config.TEA_LOAD_PATH)
+    else:
+        teacher = Wrn28k(num_inp_filters=3, k=2)
+
     # 构建student模型
-    student = Wrn28k(num_inp_filters=3, k=2)
+    if config.STD_CONTINUE:
+        student = tf.saved_model.load(config.STD_LOAD_PATH)
+    else:
+        student = Wrn28k(num_inp_filters=3, k=2)
 
     # 定义teacher的损失函数，损失函数之一为UdaCrossEntroy
     mpl_loss = tf.losses.CategoricalCrossentropy(
