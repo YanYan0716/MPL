@@ -19,6 +19,8 @@ if __name__ == '__main__':
     TEACHER_LR_WARMUP_STEPS = 3000
     TEACHER_NUM_WAIT_STEPS = 0
     LOG_EVERY = 40
+    LABEL_SMOOTHING = 0.15
+    GRAD_BOUND = 1e9
 
     # 有标签的数据集 batch_size=config.BATCH_SIZE
     df_label = pd.read_csv('/content/cifar/unlabel.csv')
@@ -36,7 +38,8 @@ if __name__ == '__main__':
     # 定义损失函数，
     t_label_loss = tf.losses.CategoricalCrossentropy(
         reduction=tf.keras.losses.Reduction.NONE,
-        from_logits=False,
+        from_logits=True,
+        label_smoothing=LABEL_SMOOTHING,
     )
 
     # 定义学习率
@@ -62,19 +65,19 @@ if __name__ == '__main__':
                     y_pred=logits,
                 )
                 # 计算损失函数
-                # cross_entroy = tf.reduce_sum(cross_entroy) / \
-                #                          tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
+                cross_entroy = tf.reduce_sum(cross_entroy) / \
+                                         tf.convert_to_tensor(BATCH_SIZE, dtype=tf.float32)
                 SLOSS += cross_entroy
             # 反向传播，更新参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            # TeaOptim = keras.optimizers.SGD(
-            #     learning_rate=TeacherLR,
-            #     momentum=0.9,
-            #     # nesterov=True,
-            # )
-            TeaOptim = keras.optimizers.Adam(lr=3e-4)
+            TeaOptim = keras.optimizers.SGD(
+                learning_rate=TeacherLR,
+                momentum=0.9,
+                nesterov=True,
+            )
+            # TeaOptim = keras.optimizers.Adam(lr=3e-4)
             GStud_unlabel = s_tape.gradient(cross_entroy, teacher.trainable_variables)
-            # GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
+            GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GStud_unlabel, teacher.trainable_variables))
 
             if (batch_idx + 1) % LOG_EVERY == 0:
