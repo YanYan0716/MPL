@@ -33,8 +33,8 @@ if __name__ == '__main__':
 
     # 定义损失函数，
     t_label_loss = tf.losses.CategoricalCrossentropy(
-        # reduction=tf.keras.losses.Reduction.NONE,
-        from_logits=True,
+        reduction=tf.keras.losses.Reduction.NONE,
+        from_logits=False,
     )
 
     # 定义学习率
@@ -60,8 +60,8 @@ if __name__ == '__main__':
                     y_pred=logits,
                 )
                 # 计算损失函数
-                # cross_entroy = tf.reduce_sum(cross_entroy) / \
-                #                          tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
+                cross_entroy = tf.reduce_sum(cross_entroy) / \
+                                         tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
                 SLOSS += cross_entroy
             # 反向传播，更新参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
