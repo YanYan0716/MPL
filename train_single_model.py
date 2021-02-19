@@ -19,7 +19,7 @@ if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
     # 有标签的数据集 batch_size=config.BATCH_SIZE
-    df_label = pd.read_csv(config.LABEL_FILE_PATH)
+    df_label = pd.read_csv('/content/cifar/unlabel.csv')
     file_paths = df_label['file_name'].values
     labels = df_label['label'].values
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
@@ -65,14 +65,14 @@ if __name__ == '__main__':
                 SLOSS += cross_entroy
             # 反向传播，更新参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            # TeaOptim = keras.optimizers.SGD(
-            #     learning_rate=TeacherLR,
-            #     momentum=0.9,
-            #     # nesterov=True,
-            # )
-            TeaOptim = keras.optimizers.Adam(lr=3e-4)
+            TeaOptim = keras.optimizers.SGD(
+                learning_rate=TeacherLR,
+                momentum=0.9,
+                nesterov=True,
+            )
+            # TeaOptim = keras.optimizers.Adam(lr=3e-4)
             GStud_unlabel = s_tape.gradient(cross_entroy, teacher.trainable_variables)
-            # GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
+            GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GStud_unlabel, teacher.trainable_variables))
 
             if (batch_idx + 1) % config.LOG_EVERY == 0:
