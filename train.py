@@ -25,7 +25,7 @@ if __name__ == '__main__':
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
-        .batch(config.BATCH_SIZE, drop_remainder=True)\
+        .batch(config.BATCH_SIZE, drop_remainder=True) \
         .shuffle(buffer_size=4000)
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_unlabel_train = ds_unlabel_train \
         .map(unlabel_image, num_parallel_calls=AUTOTUNE) \
-        .batch(config.BATCH_SIZE * config.UDA_DATA, drop_remainder=True)\
+        .batch(config.BATCH_SIZE * config.UDA_DATA, drop_remainder=True) \
         .shuffle(buffer_size=50000)
 
     # 将有标签数据和无标签数据整合成最终的数据形式
@@ -86,6 +86,10 @@ if __name__ == '__main__':
 
     global_step = 0
     print('start training ...')
+    TBacc = 0
+    Tacc = 0
+    SBacc = 0
+    Sacc = 0
     for epoch in range(config.MAX_EPOCHS):
         TLOSS = 0
         TLOSS_1 = 0
@@ -181,7 +185,7 @@ if __name__ == '__main__':
                 nesterov=True,
             )
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
-            Gtea, _ =  tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
+            Gtea, _ = tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
             if (batch_idx + 1) % config.LOG_EVERY == 0:
@@ -204,10 +208,19 @@ if __name__ == '__main__':
             Tacc = test(teacher)
             print(f'testing teacher model ... acc: {Tacc}')
         # 测试student在test上的acc，当student开始训练的时候
-        if (StudentLR > 0) and (epoch%5==0):
+        if (StudentLR > 0) and (epoch % 5 == 0):
             acc = test(student)
             print(f'testing ... acc: {acc}')
         # 保存weights
+        if Tacc > TBacc:
+            Tsave_path = config.TEA_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
+            Ssave_path = config.STD_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
+
+            tf.saved_model.save(teacher, Tsave_path)
+            TBacc = Tacc
+            #     tf.saved_model.save(student, Ssave_path)
+            print(f'saving for TBacc {TBacc}, Tpath:{Tsave_path}, Spath:{Ssave_path}')
+
         # if ((epoch + 1) % config.SAVE_EVERY == 0) and (StudentLR > 0):
         #     Tsave_path = config.TEA_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
         #     Ssave_path = config.STD_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
