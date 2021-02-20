@@ -85,7 +85,7 @@ if __name__ == '__main__':
     )
 
     global_step = 0
-
+    print('start training ...')
     for epoch in range(config.MAX_EPOCHS):
         TLOSS = 0
         TLOSS_1 = 0
