@@ -13,7 +13,7 @@ class LearningRate(object):
         if num_wait_steps is None:
             raise ValueError(f'num_wait_steps is error in learningRate file')
 
-        initial_lr = initial_lr * config.BATCH_SIZE / 256
+        # initial_lr = initial_lr * config.BATCH_SIZE / 256
         self.initial_lr = initial_lr
         self.num_warmup_steps = num_warmup_steps
         self.num_wait_steps = num_wait_steps

@@ -5,6 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 from tensorflow import keras
 import pandas as pd
+import tensorflow_addons as tfa
 
 import config
 from Model import Wrn28k
@@ -135,10 +136,11 @@ if __name__ == '__main__':
                 )
             # 反向传播，更新student的参数-------
             StudentLR = Std_lr_fun.__call__(global_step=global_step)
-            StdOptim = keras.optimizers.SGD(
+            StdOptim = tfa.optimizers.SGDW(
                 learning_rate=StudentLR,
                 momentum=0.9,
                 nesterov=True,
+                weight_decay=5e-4,
             )
             GStud_unlabel = s_tape.gradient(cross_entroy['s_on_u'], student.trainable_variables)
             GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
@@ -179,13 +181,14 @@ if __name__ == '__main__':
                 TLOSS_3 += cross_entroy['mpl'] * dot_product
             # 反向传播，更新teacher的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            TeaOptim = keras.optimizers.SGD(
+            TeaOptim = tfa.optimizers.SGDW(
                 learning_rate=TeacherLR,
                 momentum=0.9,
                 nesterov=True,
+                weight_decay=5e-4,
             )
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
-            Gtea, _ = tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
+            GTea, _ = tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
             if (batch_idx + 1) % config.LOG_EVERY == 0:

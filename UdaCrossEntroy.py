@@ -29,11 +29,11 @@ def UdaCrossEntroy(all_logits, l_labels, global_step):
     # ------------loss的计算---------
     # part1：有监督部分
     cross_entroy['l'] = keras.losses.CategoricalCrossentropy(
-        from_logits=False,
+        from_logits=True,
         label_smoothing=config.LABEL_SMOOTHING,
         reduction=keras.losses.Reduction.NONE,
     )(labels['l'], logits['l'])
-
+    '''
     probs = tf.nn.softmax(logits['l'], axis=-1)  # 将每张图片对应10个类别的输出转化为概率的形式
     correct_probs = tf.reduce_sum(labels['l'] * probs, axis=-1)  # 根据图片对应的label和概率计算出 预测正确类别的概率
 
@@ -45,6 +45,7 @@ def UdaCrossEntroy(all_logits, l_labels, global_step):
     masks['l'] = tf.math.less_equal(correct_probs, l_threshold)
     masks['l'] = tf.cast(masks['l'], tf.float32)
     masks['l'] = tf.stop_gradient(masks['l'])  # 如果对某图片预测的概率小于l_threahold,输出1，否则是0
+    '''
     cross_entroy['l'] = tf.reduce_sum(cross_entroy['l']) / float(batch_size)
 
     # part2: 无监督部分

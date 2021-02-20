@@ -66,3 +66,4 @@ LR_DECAY_RATE = 0.97
 
 # about optimizer
 OPTIM_TYPE = 'sgd'  # sgd, momentum, rmsprop
+WEIGHT_DECAY = 5e-4
