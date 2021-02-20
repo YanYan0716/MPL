@@ -26,7 +26,7 @@ if __name__ == '__main__':
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
         .batch(config.BATCH_SIZE, drop_remainder=True)\
-        .shuffle(buffer_size=config.SHUFFLE_SIZE)
+        .shuffle(buffer_size=4000)
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
     df_unlabel = pd.read_csv(config.UNLABEL_FILE_PATH)
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     ds_unlabel_train = ds_unlabel_train \
         .map(unlabel_image, num_parallel_calls=AUTOTUNE) \
         .batch(config.BATCH_SIZE * config.UDA_DATA, drop_remainder=True)\
-        .shuffle(buffer_size=config.SHUFFLE_SIZE*config.UDA_DATA)
+        .shuffle(buffer_size=50000)
 
     # 将有标签数据和无标签数据整合成最终的数据形式
     ds_train = tf.data.Dataset.zip((ds_label_train, ds_unlabel_train))

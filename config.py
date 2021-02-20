@@ -2,7 +2,7 @@
 IMG_SIZE = 32
 BATCH_SIZE = 32
 LABEL_FILE_PATH = '/content/cifar/label4000.csv'
-UNLABEL_FILE_PATH = '/content/cifar/unlabel.csv'
+UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
 _MAX_LEVEL = 10
 CUTOUT_CONST = 3
