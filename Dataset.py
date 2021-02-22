@@ -43,6 +43,9 @@ def label_image(img_file, label):
     img = tf.image.resize(img, (config.IMG_SIZE + 5, config.IMG_SIZE + 5))
     img = tf.image.random_crop(img, (config.IMG_SIZE, config.IMG_SIZE, 3))
     img = tf.cast(img, tf.float32) / 255.0
+    mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465]), axis=0)
+    std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616]), axis=0)
+    img = (img-mean)/std
     # 对标签的处理
     label = tf.raw_ops.OneHot(indices=label, depth=config.NUM_CLASSES, on_value=1.0, off_value=0)
     return {'images': img, 'labels': label}
@@ -72,6 +75,12 @@ def unlabel_image(img_file, label):
 
     aug_image = tf.cast(aug_image, tf.float32) / 255.0
     ori_image = tf.cast(ori_image, tf.float32) / 255.0
+
+    mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465]), axis=0)
+    std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616]), axis=0)
+
+    aug_image = (aug_image-mean)/std
+    ori_image = (ori_image-mean)/std
 
     return {'ori_images': ori_image, 'aug_images': aug_image}
 
@@ -117,25 +126,25 @@ if __name__ == '__main__':
         break
 
     # 将有标签数据和无标签数据整合成最终的数据形式
-    ds_train = tf.data.Dataset.zip((ds_label_train, ds_unlabel_train))
-    ds_train = ds_train.map(merge_dataset)
-    for data in ds_train:
-        label_img = data[0]
-        print(data[0].shape)
-        print(data[1].shape)
-        print(data[2].shape)
-        print(data[3].shape)
-        label = data[1]
-        ori_images = data[2]
-        aug_images = data[3]
-        print(label)
-        print(label.shape)
-        plt.figure(figsize=(10, 10))
-        plt.subplot(1, 3, 1)
-        plt.imshow(label_img[0].numpy())
-        plt.subplot(1, 3, 2)
-        plt.imshow(ori_images[0].numpy())
-        plt.subplot(1, 3, 3)
-        plt.imshow(aug_images[0].numpy())
-        plt.show()
-        break
+    # ds_train = tf.data.Dataset.zip((ds_label_train, ds_unlabel_train))
+    # ds_train = ds_train.map(merge_dataset)
+    # for data in ds_train:
+    #     label_img = data[0]
+    #     print(data[0].shape)
+    #     print(data[1].shape)
+    #     print(data[2].shape)
+    #     print(data[3].shape)
+    #     label = data[1]
+    #     ori_images = data[2]
+    #     aug_images = data[3]
+    #     print(label)
+    #     print(label.shape)
+    #     plt.figure(figsize=(10, 10))
+    #     plt.subplot(1, 3, 1)
+    #     plt.imshow(label_img[0].numpy())
+    #     plt.subplot(1, 3, 2)
+    #     plt.imshow(ori_images[0].numpy())
+    #     plt.subplot(1, 3, 3)
+    #     plt.imshow(aug_images[0].numpy())
+    #     plt.show()
+    #     break

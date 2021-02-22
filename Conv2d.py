@@ -29,7 +29,7 @@ class Conv2d(tf.Module):
             ),
             trainable=True,
         )
-        # self.w = shared_weight(w=self.w, num_cores=config.NUM_XLA_SHARDS)
+        self.w = shared_weight(w=self.w, num_cores=config.NUM_XLA_SHARDS)
         if self.use_bias:
             if b is None:
                 self.b = tf.Variable(
@@ -37,15 +37,15 @@ class Conv2d(tf.Module):
                     trainable=True,
                     name='bias',
                 )
-                # self.b = shared_weight(w=self.b, num_cores=config.NUM_XLA_SHARDS)
+                self.b = shared_weight(w=self.b, num_cores=config.NUM_XLA_SHARDS)
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
     def __call__(self, x):
         # self.w.trainable = self.training
+        # self.b.trainable = self.training
         x = tf.nn.conv2d(x, self.w, strides=[1, self.stride, self.stride, 1], padding=self.padding,
                          data_format=self.data_format)
         if self.use_bias:
-            # self.b.trainable = self.training
             x = tf.nn.bias_add(x, self.b, name='bias_add')
         return x
 

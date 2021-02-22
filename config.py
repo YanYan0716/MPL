@@ -1,17 +1,17 @@
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 32
-LABEL_FILE_PATH = '/content/cifar/label4000.csv'
-UNLABEL_FILE_PATH = '/content/cifar/train.csv'
+BATCH_SIZE = 64
+# LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
+# UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
 _MAX_LEVEL = 10
-CUTOUT_CONST = 3
-TRANSLATE_CONST = 1.
+CUTOUT_CONST = 40.
+TRANSLATE_CONST = 100.
 REPLACE_COLOR = [128, 128, 128]
 
 
-# LABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/label/data.csv'
-# UNLABEL_FILE_PATH = 'E:/algorithm/MPL/dataset/unlabel/data.csv'
+LABEL_FILE_PATH = '../../input/cifar10/cifar/label.csv'  # kaggle
+UNLABEL_FILE_PATH = '../../input/cifar10/cifar/train.csv'
 
 
 AUGMENT_MAGNITUDE = 10
@@ -43,7 +43,8 @@ TEST_EVERY = 2
 GRAD_BOUND = 1e9
 
 # about testing
-TEST_FILE_PATH = '/content/cifar/test.csv'
+# TEST_FILE_PATH = '/content/cifar/test.csv'
+TEST_FILE_PATH = '../../input/cifar10/cifar/test.csv'
 TEST_MODEL_PATH = './weights/S'
 
 # about UdaCrossEntroy
@@ -55,7 +56,7 @@ UDA_THRESHOLD = 0.6
 # about learning rate
 STUDENT_LR = 0.05  # student
 STUDENT_LR_WARMUP_STEPS = 20000
-STUDENT_LR_WAIT_STEPS = 20000
+STUDENT_LR_WAIT_STEPS = 2000
 TEACHER_LR = 0.05  # teacher
 TEACHER_LR_WARMUP_STEPS = 20000
 TEACHER_NUM_WAIT_STEPS = 0
