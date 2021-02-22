@@ -11,6 +11,9 @@ from learningRate import LearningRate
 from Dataset import label_image
 from test import test
 
+import config
+
+
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
     BATCH_SIZE = 64
@@ -23,7 +26,7 @@ if __name__ == '__main__':
     GRAD_BOUND = 1e9
 
     # 有标签的数据集 batch_size=config.BATCH_SIZE
-    df_label = pd.read_csv('/content/cifar/unlabel.csv')
+    df_label = pd.read_csv(config.LABEL_FILE_PATH)
     file_paths = df_label['file_name'].values
     labels = df_label['label'].values
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))

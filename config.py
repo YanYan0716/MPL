@@ -10,8 +10,8 @@ TRANSLATE_CONST = 100.
 REPLACE_COLOR = [128, 128, 128]
 
 
-LABEL_FILE_PATH = '../../input/cifar10/cifar/label.csv'  # kaggle
-UNLABEL_FILE_PATH = '../../input/cifar10/cifar/train.csv'
+LABEL_FILE_PATH = '../input/cifar10/cifar/label.csv'  # kaggle
+UNLABEL_FILE_PATH = '../input/cifar10/cifar/train.csv'
 
 
 AUGMENT_MAGNITUDE = 10
@@ -44,7 +44,7 @@ GRAD_BOUND = 1e9
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'
-TEST_FILE_PATH = '../../input/cifar10/cifar/test.csv'
+TEST_FILE_PATH = '../input/cifar10/cifar/test.csv'
 TEST_MODEL_PATH = './weights/S'
 
 # about UdaCrossEntroy
