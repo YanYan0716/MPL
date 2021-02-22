@@ -25,20 +25,20 @@ class Dense(tf.Module):
             name='w',
             trainable=True
         )
-        self.w = shared_weight(self.w, num_cores=config.NUM_XLA_SHARDS)
+        # self.w = shared_weight(self.w, num_cores=config.NUM_XLA_SHARDS)
         if self.use_bias:
             self.b = tf.Variable(
                 tf.zeros([self.num_out_filters]),
                 name='b',
                 trainable=True
             )
-            self.b = shared_weight(self.b, num_cores=config.NUM_XLA_SHARDS)
+            # self.b = shared_weight(self.b, num_cores=config.NUM_XLA_SHARDS)
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, None], dtype=tf.float32)])
     def __call__(self, x):
-        self.w.trainable = self.training
+        # self.w.trainable = self.training
         x = tf.linalg.matmul(x, self.w)
         if self.use_bias:
-            self.b.trainable = self.training
+            # self.b.trainable = self.training
             x = tf.nn.bias_add(x, self.b, name='bias_add')
         return x
