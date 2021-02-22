@@ -22,6 +22,7 @@ class WrnBlock(tf.Module):
             num_out_filters=self.num_out_filters,
             stride=self.stride,
             name='conv_3_1',
+            training=self.training
         )
         self.batch_norm_2 = BatchNorm(
             size=self.num_out_filters,
@@ -33,20 +34,25 @@ class WrnBlock(tf.Module):
             filter_size=3,
             num_out_filters=self.num_out_filters,
             stride=1,
-            name='conv_3_2'
+            name='conv_3_2',
+            training=self.training
         )
         if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
             self.residual = Conv2d(
                 num_inp_filters=self.num_inp_filters,
                 filter_size=1,
                 num_out_filters=self.num_out_filters,
-                stride=self.stride
+                stride=self.stride,
+                training=self.training
             )
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
     def __call__(self, x):
         self.batch_norm_1.training = self.training
+        self.conv2d_1.training = self.training
         self.batch_norm_2.training = self.training
+        self.conv2d_2.training = self.training
+
         residual_x = x
         x = self.batch_norm_1(x)
         if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
@@ -58,6 +64,7 @@ class WrnBlock(tf.Module):
         x = self.conv2d_2(x)
         if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
             residual_x = tf.nn.leaky_relu(residual_x, alpha=0.2, name='Lrelu_3')
+            self.residual.training = self.training
             residual_x = self.residual(residual_x)
         x = tf.math.add(x, residual_x)
 

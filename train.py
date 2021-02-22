@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
     df_unlabel = pd.read_csv(config.UNLABEL_FILE_PATH)
-    file_paths = df_unlabel['file_name'].values
+    file_paths = df_unlabel['name'].values
     labels = df_unlabel['label'].values
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_unlabel_train = ds_unlabel_train \
@@ -165,7 +165,7 @@ if __name__ == '__main__':
                 cross_entroy['mpl'] = mpl_loss(
                     y_true=tf.stop_gradient(tf.nn.softmax(logits['aug'], axis=-1)),
                     y_pred=logits['aug']
-                )
+                )  # 恒正
                 cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl']) / \
                                       tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=tf.float32)
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(

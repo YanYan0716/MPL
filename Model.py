@@ -55,6 +55,7 @@ class Wrn28k(tf.Module):
 
     @tf.function(input_signature=[tf.TensorSpec(shape=[None, 32, 32, 3], dtype=tf.float32)])
     def __call__(self, x):
+        self.conv2d.training = self.training
         self.wrn_block_1.training = self.training
         self.wrn_block_2.training = self.training
         self.wrn_block_3.training = self.training
@@ -68,6 +69,7 @@ class Wrn28k(tf.Module):
         self.wrn_block_11.training = self.training
         self.wrn_block_12.training = self.training
         self.bn.training = self.training
+        self.dense.training = self.training
 
         x = self.conv2d(x)
         x = self.wrn_block_1(x)
@@ -82,6 +84,7 @@ class Wrn28k(tf.Module):
         x = self.wrn_block_10(x)
         x = self.wrn_block_11(x)
         x = self.wrn_block_12(x)
+
         x = self.bn(x)
         x = tf.nn.leaky_relu(x, alpha=0.2)
         x = tf.reduce_mean(x, axis=[1, 2], name='global_avg_pool')
