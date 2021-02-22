@@ -50,7 +50,7 @@ TEST_MODEL_PATH = './weights/S'
 # about UdaCrossEntroy
 UDA_DATA = 7
 LABEL_SMOOTHING = 0.15
-UDA_TEMP = 0.7
+UDA_TEMP = 0.75
 UDA_THRESHOLD = 0.6
 
 # about learning rate
