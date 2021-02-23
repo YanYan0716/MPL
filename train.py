@@ -153,10 +153,10 @@ if __name__ == '__main__':
                 y_pred=logits['s_on_l_new']
             )
             cross_entroy['s_on_l_new'] = tf.reduce_sum(cross_entroy['s_on_l_new']) / \
-                                         tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
+                                         tf.convert_to_tensor(config.BATCH_SIZE, dtype=config.DTYPE)
             dot_product = cross_entroy['s_on_l_new'] - shadow
             moving_dot_product = keras.initializers.GlorotNormal()(shape=dot_product.shape)
-            moving_dot_product = tf.Variable(initial_value=moving_dot_product, trainable=False, dtype=tf.float32)
+            moving_dot_product = tf.Variable(initial_value=moving_dot_product, trainable=False, dtype=config.DTYPE)
             moving_dot_product_update = moving_dot_product.assign_sub(0.01 * (moving_dot_product - dot_product))
             dot_product = dot_product - moving_dot_product
             dot_product = tf.stop_gradient(dot_product)
@@ -167,9 +167,9 @@ if __name__ == '__main__':
                     y_pred=logits['aug']
                 )  # 恒正
                 cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl']) / \
-                                      tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=tf.float32)
+                                      tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=config.DTYPE)
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
-                    1., tf.cast(global_step, tf.float32) / float(config.UDA_STEPS)
+                    1., tf.cast(global_step, config.DTYPE) / float(config.UDA_STEPS)
                 )
                 # if StudentLR == 0:
                 #     dot_product = 0

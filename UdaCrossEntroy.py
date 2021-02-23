@@ -11,7 +11,7 @@ from Model import Wrn28k
 
 
 def UdaCrossEntroy(all_logits, l_labels, global_step):
-    batch_size = config.BATCH_SIZE
+    batch_size = 1 #config.BATCH_SIZE
     uda_data = config.UDA_DATA
     logits = {}
     labels = {}
@@ -60,12 +60,12 @@ def UdaCrossEntroy(all_logits, l_labels, global_step):
     largest_probs = tf.reduce_max(labels['ori'], axis=-1, keepdims=True)
 
     masks['u'] = tf.math.greater_equal(largest_probs, tf.constant(config.UDA_THRESHOLD))  # 判断最大概率是否大于阈值
-    masks['u'] = tf.cast(masks['u'], tf.float32)
+    masks['u'] = tf.cast(masks['u'], config.DTYPE)
     masks['u'] = tf.stop_gradient(masks['u'])
     # 极端情况，当ori的预测完全准确，即class i = 1, 其他类别为0时，
     # aug的class i最大，即最大的负数，两者相乘再取负，就是一个非常接近于0的数字
     cross_entroy['u'] = tf.reduce_sum(-cross_entroy['u'] * masks['u']) / \
-                        tf.convert_to_tensor((batch_size * uda_data), dtype=tf.float32)
+                        tf.convert_to_tensor((batch_size * uda_data), dtype=config.DTYPE)
 
     return logits, labels, masks, cross_entroy
 
@@ -82,7 +82,8 @@ if __name__ == '__main__':
 
     l_labels = np.array([2])
     l_labels = tf.convert_to_tensor(l_labels, dtype=tf.int32)
-    l_labels = tf.raw_ops.OneHot(indices=l_labels, depth=config.NUM_CLASSES, on_value=1.0, off_value=0,)
+    l_labels = tf.raw_ops.OneHot(indices=l_labels, depth=config.NUM_CLASSES, on_value=1.0, off_value=0)
+    l_labels = tf.cast(l_labels, config.DTYPE)
 
     # 构建teacher模型，产生输出
     teacher = Wrn28k(num_inp_filters=3, k=2)

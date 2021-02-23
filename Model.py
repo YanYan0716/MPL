@@ -90,7 +90,7 @@ class Wrn28k(tf.Module):
         x = tf.reduce_mean(x, axis=[1, 2], name='global_avg_pool')
         x = tf.nn.dropout(x, rate=config.DROPOUT_RATE)
         x = self.dense(x)
-        x = tf.cast(x, dtype=tf.float32, name='logits')
+        x = tf.cast(x, dtype=config.DTYPE, name='logits')
         return x
 
 

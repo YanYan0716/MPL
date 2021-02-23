@@ -48,6 +48,7 @@ def label_image(img_file, label):
     img = (img-mean)/std
     # 对标签的处理
     label = tf.raw_ops.OneHot(indices=label, depth=config.NUM_CLASSES, on_value=1.0, off_value=0)
+    label = tf.cast(label, dtype=config.DTYPE)
     return {'images': img, 'labels': label}
 
 

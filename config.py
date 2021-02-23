@@ -73,4 +73,4 @@ WEIGHT_DECAY = 5e-4
 
 
 # dtype
-DTYPE = tf.float16
+DTYPE = tf.float32
