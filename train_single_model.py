@@ -16,9 +16,9 @@ import config
 
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
-    BATCH_SIZE = 64
-    MAX_EPOCHS = 3000
-    TEACHER_LR = 0.1
+    BATCH_SIZE = 128
+    MAX_EPOCHS = 300
+    TEACHER_LR = 0.01
     TEACHER_LR_WARMUP_STEPS = 3000
     TEACHER_NUM_WAIT_STEPS = 0
     LOG_EVERY = 40
@@ -26,18 +26,18 @@ if __name__ == '__main__':
     GRAD_BOUND = 1e9
 
     # 有标签的数据集 batch_size=config.BATCH_SIZE
-    df_label = pd.read_csv(config.LABEL_FILE_PATH)
-    file_paths = df_label['file_name'].values
+    df_label = pd.read_csv(config.UNLABEL_FILE_PATH)
+    file_paths = df_label['name'].values
     labels = df_label['label'].values
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
         .batch(BATCH_SIZE, drop_remainder=True)\
-        .shuffle(buffer_size=BATCH_SIZE*16)
+        .shuffle(buffer_size=50000)
 
     # 构建模型
     teacher = Wrn28k(num_inp_filters=3, k=2)
-    teacher = keras.applications.resnet50()
+    # teacher = keras.applications.resnet50()
 
     # 定义损失函数，
     t_label_loss = tf.losses.CategoricalCrossentropy(
