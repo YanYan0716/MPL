@@ -54,20 +54,52 @@ class WrnBlock(tf.Module):
         self.batch_norm_2.training = self.training
         self.conv2d_2.training = self.training
 
-        residual_x = x
-        x = self.batch_norm_1(x)
         if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
-            residual_x = x
-        x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_1')
-        x = self.conv2d_1(x)
-        x = self.batch_norm_2(x)
-        x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_2')
-        x = self.conv2d_2(x)
+            x = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
+        else:
+            x_ = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
+
         if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
-            residual_x = tf.nn.leaky_relu(residual_x, alpha=0.2, name='Lrelu_3')
-            self.residual.training = self.training
-            residual_x = self.residual(residual_x)
-        x = tf.math.add(x, residual_x)
+            x_ = tf.nn.leaky_relu(self.batch_norm_2(self.conv2d_1(x)), alpha=0.2)
+        else:
+            x_ = tf.nn.leaky_relu(self.batch_norm_2(self.conv2d_1(x_)), alpha=0.2)
+
+        if config.DROPOUT_RATE > 0:
+            x_ = tf.nn.dropout(x_, rate=config.DROPOUT_RATE)
+        x_ = self.conv2d_2(x_)
+
+        if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+            x = self.residual(x)
+            x = tf.math.add(x, x_)
+        else:
+            x = tf.math.add(x, x_)
+
+        #     residual_x = x
+        # x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_1')
+        # x = self.conv2d_1(x)
+        # x = self.batch_norm_2(x)
+        # x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_2')
+        # x = self.conv2d_2(x)
+        # if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+        #     residual_x = tf.nn.leaky_relu(residual_x, alpha=0.2, name='Lrelu_3')
+        #     self.residual.training = self.training
+        #     residual_x = self.residual(residual_x)
+        # x = tf.math.add(x, residual_x)
+
+        # residual_x = x
+        # x = self.batch_norm_1(x)
+        # if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+        #     residual_x = x
+        # x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_1')
+        # x = self.conv2d_1(x)
+        # x = self.batch_norm_2(x)
+        # x = tf.nn.leaky_relu(x, alpha=0.2, name='Lrelu_2')
+        # x = self.conv2d_2(x)
+        # if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+        #     residual_x = tf.nn.leaky_relu(residual_x, alpha=0.2, name='Lrelu_3')
+        #     self.residual.training = self.training
+        #     residual_x = self.residual(residual_x)
+        # x = tf.math.add(x, residual_x)
 
         return x
 
