@@ -73,23 +73,22 @@ def UdaCrossEntroy(all_logits, l_labels, global_step):
 if __name__ == '__main__':
     # 制作数据
     l_images = np.random.random((1, 32, 32, 3))
-    l_images = tf.convert_to_tensor(l_images, dtype=tf.float32)
+    l_images = tf.convert_to_tensor(l_images, dtype=config.DTYPE)
     ori_images = np.random.random((1 * config.UDA_DATA, 32, 32, 3))
-    ori_images = tf.convert_to_tensor(ori_images, dtype=tf.float32)
+    ori_images = tf.convert_to_tensor(ori_images, dtype=config.DTYPE)
     aug_images = np.random.random((1 * config.UDA_DATA, 32, 32, 3))
-    aug_images = tf.convert_to_tensor(aug_images, dtype=tf.float32)
+    aug_images = tf.convert_to_tensor(aug_images, dtype=config.DTYPE)
     all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [3, 32, 32, 3]
 
     l_labels = np.array([2])
     l_labels = tf.convert_to_tensor(l_labels, dtype=tf.int32)
-    l_labels = tf.raw_ops.OneHot(indices=l_labels, depth=config.NUM_CLASSES, on_value=1.0, off_value=0)
-    # print(l_labels, l_labels.shape)
+    l_labels = tf.raw_ops.OneHot(indices=l_labels, depth=config.NUM_CLASSES, on_value=1.0, off_value=0,)
 
     # 构建teacher模型，产生输出
     teacher = Wrn28k(num_inp_filters=3, k=2)
     output = teacher(x=all_images)  # shape=[15, 10]
 
-    logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels)
+    logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels, 1)
     print('logits: ', logits.keys())
     print('labels: ', labels.keys())
     print('masks: ', masks.keys())

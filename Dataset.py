@@ -42,7 +42,7 @@ def label_image(img_file, label):
     img = tf.image.random_flip_left_right(img)
     img = tf.image.resize(img, (config.IMG_SIZE + 5, config.IMG_SIZE + 5))
     img = tf.image.random_crop(img, (config.IMG_SIZE, config.IMG_SIZE, 3))
-    img = tf.cast(img, tf.float32) / 255.0
+    img = tf.cast(img, config.DTYPE) / 255.0
     mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465]), axis=0)
     std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616]), axis=0)
     img = (img-mean)/std
@@ -73,8 +73,8 @@ def unlabel_image(img_file, label):
     # aug_image = augment.cutout(aug_image, pad_size=config.IMG_SIZE // 8, replace=128)
     aug_image = tf.image.random_flip_left_right(aug_image)
 
-    aug_image = tf.cast(aug_image, tf.float32) / 255.0
-    ori_image = tf.cast(ori_image, tf.float32) / 255.0
+    aug_image = tf.cast(aug_image, config.DTYPE) / 255.0
+    ori_image = tf.cast(ori_image, config.DTYPE) / 255.0
 
     mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465]), axis=0)
     std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616]), axis=0)
@@ -102,7 +102,7 @@ if __name__ == '__main__':
         .map(label_image, num_parallel_calls=AUTOTUNE)\
         .batch(1).shuffle(1)
     for data in ds_label_train:
-        # print(data.keys())
+        print(data.keys())
         break
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA

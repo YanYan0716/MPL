@@ -28,24 +28,24 @@ class BatchNorm(tf.Module):
         super(BatchNorm, self).__init__(name=name)
         self.size = size
         self.training = training
-        self.gamma = tf.Variable(initial_value=tf.ones([self.size], dtype=tf.float32), trainable=True, name='gamma')
+        self.gamma = tf.Variable(initial_value=tf.ones([self.size], dtype=config.DTYPE), trainable=True, name='gamma')
         # self.gamma = shared_weight(w=self.gamma, num_cores=config.NUM_XLA_SHARDS)
-        self.bate = tf.Variable(initial_value=tf.zeros([self.size], dtype=tf.float32), trainable=True, name='bate')
+        self.bate = tf.Variable(initial_value=tf.zeros([self.size], dtype=config.DTYPE), trainable=True, name='bate')
         # self.bate = shared_weight(w=self.bate, num_cores=config.NUM_XLA_SHARDS)
         self.moving_mean = tf.Variable(
-            initial_value=tf.zeros([self.size], dtype=tf.float32),
+            initial_value=tf.zeros([self.size], dtype = config.DTYPE),
             trainable=False,
-            name='moving_mean'
+            name='moving_mean',
         )
         self.moving_variance = tf.Variable(
-            initial_value=tf.ones([self.size], dtype=tf.float32),
+            initial_value=tf.ones([self.size], dtype = config.DTYPE),
             trainable=False,
-            name='moving_variance'
+            name='moving_variance',
         )
 
-    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=config.DTYPE)])
     def __call__(self, x):
-        x = tf.cast(x, tf.float32)
+        x = tf.cast(x, config.DTYPE)
         if self.training:
             mean, variance = tf.nn.moments(x, [0, 1, 2])
             self.moving_variance.assign(
@@ -103,14 +103,14 @@ def loss(input):
 if __name__ == '__main__':
     np.random.seed(1)
     img = np.random.random([1, 32, 32, 3])
-    img = tf.convert_to_tensor(img, dtype=tf.float32)
+    img = tf.convert_to_tensor(img, dtype=config.DTYPE)
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
 
     # 使用自己定义的BN层  有两个变量
     model_m = BatchNorm(3, training=True)
     # print(len(model_m.trainable_variables))
 
-    tf.saved_model.save(model_m, './weights')
+    # tf.saved_model.save(model_m, './weights')
 
     # for i in range(2):
     #     with tf.GradientTape() as tape:

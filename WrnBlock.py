@@ -3,6 +3,7 @@ import tensorflow as tf
 from BatchNorm import BatchNorm
 from Conv2d import Conv2d
 
+import config
 
 class WrnBlock(tf.Module):
     def __init__(self, num_inp_filters, num_out_filters, stride, training=True, name='wrn_block'):
@@ -46,7 +47,7 @@ class WrnBlock(tf.Module):
                 training=self.training
             )
 
-    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=config.DTYPE)])
     def __call__(self, x):
         self.batch_norm_1.training = self.training
         self.conv2d_1.training = self.training
@@ -72,10 +73,10 @@ class WrnBlock(tf.Module):
 
 
 if __name__ == '__main__':
-    img = tf.random.normal([1, 32, 32, 3])
+    img = tf.random.normal([1, 32, 32, 3], dtype=config.DTYPE)
     model = WrnBlock(num_inp_filters=3, num_out_filters=32, stride=1, training=True, name='wrn_block_1')
     output = model(img)
     print(output.shape)
     # print(len(model.trainable_variables))
 
-    tf.saved_model.save(model, './weights')
+    # tf.saved_model.save(model, './weights')

@@ -25,7 +25,8 @@ class Conv2d(tf.Module):
             initial_value=lambda: tf.random.normal(
                 shape=[filter_size, filter_size, num_inp_filters, num_out_filters],
                 mean=0.0,
-                stddev=np.sqrt(2.0 / float(filter_size * filter_size * num_out_filters))
+                stddev=np.sqrt(2.0 / float(filter_size * filter_size * num_out_filters)),
+                dtype=config.DTYPE
             ),
             trainable=True,
         )
@@ -33,13 +34,13 @@ class Conv2d(tf.Module):
         if self.use_bias:
             if b is None:
                 self.b = tf.Variable(
-                    initial_value=lambda: tf.constant(0., shape=[num_out_filters]),
+                    initial_value=lambda: tf.constant(0., shape=[num_out_filters], dtype=config.DTYPE),
                     trainable=True,
                     name='bias',
                 )
                 self.b = shared_weight(w=self.b, num_cores=config.NUM_XLA_SHARDS)
 
-    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=tf.float32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None, None, None], dtype=config.DTYPE)])
     def __call__(self, x):
         # self.w.trainable = self.training
         # self.b.trainable = self.training
@@ -60,4 +61,4 @@ if __name__ == '__main__':
         use_bias=False
     )
 
-    tf.saved_model.save(model, './weights')
+    # tf.saved_model.save(model, './weights')

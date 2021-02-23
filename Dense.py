@@ -15,12 +15,13 @@ class Dense(tf.Module):
         self.num_out_filters = num_out_filters
         self.use_bias = use_bias
         self.training = training
-        init_range = 1. / tf.math.sqrt(tf.cast(self.num_out_filters, tf.float32))
+        init_range = 1. / tf.math.sqrt(tf.cast(self.num_out_filters, config.DTYPE))
         self.w = tf.Variable(
             tf.random.uniform(
                 shape=[self.num_inp_filters, self.num_out_filters],
                 minval=-init_range,
-                maxval=init_range
+                maxval=init_range,
+                dtype=config.DTYPE,
             ),
             name='w',
             trainable=True
@@ -28,13 +29,13 @@ class Dense(tf.Module):
         # self.w = shared_weight(self.w, num_cores=config.NUM_XLA_SHARDS)
         if self.use_bias:
             self.b = tf.Variable(
-                tf.zeros([self.num_out_filters]),
+                tf.zeros([self.num_out_filters], dtype=config.DTYPE),
                 name='b',
                 trainable=True
             )
             # self.b = shared_weight(self.b, num_cores=config.NUM_XLA_SHARDS)
 
-    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None], dtype=tf.float32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, None], dtype=config.DTYPE)])
     def __call__(self, x):
         # self.w.trainable = self.training
         x = tf.linalg.matmul(x, self.w)

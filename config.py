@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 # about dataset
 IMG_SIZE = 32
 BATCH_SIZE = 64
@@ -68,3 +70,7 @@ LR_DECAY_RATE = 0.97
 # about optimizer
 OPTIM_TYPE = 'sgd'  # sgd, momentum, rmsprop
 WEIGHT_DECAY = 5e-4
+
+
+# dtype
+DTYPE = tf.float16
