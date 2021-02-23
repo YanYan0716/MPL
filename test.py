@@ -28,6 +28,9 @@ def test(student):
         img = tf.image.resize(img, (config.IMG_SIZE, config.IMG_SIZE))
         img = tf.cast(img, tf.float32) / 255.0
         img = tf.expand_dims(img, axis=0)
+        mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465]), axis=0)
+        std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616]), axis=0)
+        img = (img - mean) / std
 
         # 网络
         output = student(img)
