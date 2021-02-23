@@ -16,14 +16,14 @@ class Wrn28k(tf.Module):
     def __init__(self, num_inp_filters, k=2, name='Wrn_28_2', training=True):
         super(Wrn28k, self).__init__(name=name)
         self.training = training
-        self.s = [16, 135, 135 * 2, 135 * 4] if k == 135 else [16 * k, 16 * k, 32 * k, 64 * k]
+        self.s = [16, 135, 135 * 2, 135 * 4] if k == 135 else [16, 16 * k, 32 * k, 64 * k]
         self.conv2d = Conv2d(
             num_inp_filters=num_inp_filters,
             filter_size=3,
             num_out_filters=self.s[0],
             stride=1,
         )
-        self.wrn_block_1 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
+        self.wrn_block_1 = WrnBlock(num_inp_filters=self.s[0], num_out_filters=self.s[1], stride=1, training=training,
                                     name='wrn_block_1', activate_before_residual=True)
         self.wrn_block_2 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
                                     name='wrn_block_2', activate_before_residual=True)
@@ -33,7 +33,7 @@ class Wrn28k(tf.Module):
                                     name='wrn_block_4', activate_before_residual=True)
 
         self.wrn_block_5 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[2], stride=2, training=training,
-                                    name='wrn_block_5', activate_before_residual=False)
+                                    name='wrn_block_5', activate_before_residual=True)
         self.wrn_block_6 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
                                     name='wrn_block_6', activate_before_residual=False)
         self.wrn_block_7 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
@@ -42,7 +42,7 @@ class Wrn28k(tf.Module):
                                     name='wrn_block_8', activate_before_residual=False)
 
         self.wrn_block_9 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[3], stride=2, training=training,
-                                    name='wrn_block_9', activate_before_residual=False)
+                                    name='wrn_block_9', activate_before_residual=True)
         self.wrn_block_10 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
                                      name='wrn_block_10', activate_before_residual=False)
         self.wrn_block_11 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
@@ -94,13 +94,29 @@ class Wrn28k(tf.Module):
         return x
 
 
+def loss(input):
+    value = tf.reduce_mean(input + 1)
+    value = tf.expand_dims(value, axis=0)
+    value = tf.expand_dims(value, axis=0)
+    return value
+
+
 if __name__ == '__main__':
     img = tf.random.normal([1, config.IMG_SIZE, config.IMG_SIZE, 3], dtype=config.DTYPE)
     model = Wrn28k(num_inp_filters=3, k=2, training=True)
-    model.training = False
+
+    opt = tf.keras.optimizers.SGD(learning_rate=0.001)
+
+    with tf.GradientTape() as tape:
+        output_m = model(img)
+        Loss = loss(output_m)
+        grad = tape.gradient(Loss, model.trainable_variables)
+        opt.apply_gradients(zip(grad, model.trainable_variables))
+    print('ok')
+
 
     # print(len(model.trainable_variables))
-    output = model(x=img)
+    # output = model(x=img)
     # print(model.bn.moving_variance)
     # print(model.bn.moving_mean)
     # print(output.shape)
