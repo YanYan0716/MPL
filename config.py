@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 # about dataset
 IMG_SIZE = 32
 BATCH_SIZE = 64
@@ -10,7 +12,7 @@ TRANSLATE_CONST = 100.
 REPLACE_COLOR = [128, 128, 128]
 
 
-LABEL_FILE_PATH = '../input/cifar10/cifar/label.csv'  # kaggle
+LABEL_FILE_PATH = '../input/cifar10/cifar/label4000.csv'  # kaggle
 UNLABEL_FILE_PATH = '../input/cifar10/cifar/train.csv'
 
 
@@ -35,10 +37,10 @@ TEA_CONTINUE = False
 STD_CONTINUE  = False
 TEA_LOAD_PATH = './weights/T_'
 STD_LOAD_PATH = './weights/S_'
-MAX_EPOCHS = 9000
+MAX_EPOCHS = 38400
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
-UDA_STEPS = 20000
+UDA_STEPS = 50000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
 
@@ -55,10 +57,10 @@ UDA_THRESHOLD = 0.6
 
 # about learning rate
 STUDENT_LR = 0.05  # student
-STUDENT_LR_WARMUP_STEPS = 20000
-STUDENT_LR_WAIT_STEPS = 2000
+STUDENT_LR_WARMUP_STEPS = 40000
+STUDENT_LR_WAIT_STEPS = 24000
 TEACHER_LR = 0.05  # teacher
-TEACHER_LR_WARMUP_STEPS = 20000
+TEACHER_LR_WARMUP_STEPS = 40000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
@@ -68,3 +70,7 @@ LR_DECAY_RATE = 0.97
 # about optimizer
 OPTIM_TYPE = 'sgd'  # sgd, momentum, rmsprop
 WEIGHT_DECAY = 5e-4
+
+
+# dtype
+DTYPE = tf.float32

@@ -53,7 +53,7 @@ class Wrn28k(tf.Module):
         self.bn = BatchNorm(size=self.s[3], training=self.training)
         self.dense = Dense(num_inp_filters=self.s[3], num_out_filters=config.NUM_CLASSES)
 
-    @tf.function(input_signature=[tf.TensorSpec(shape=[None, 32, 32, 3], dtype=tf.float32)])
+    @tf.function(input_signature=[tf.TensorSpec(shape=[None, 32, 32, 3], dtype=config.DTYPE)])
     def __call__(self, x):
         self.conv2d.training = self.training
         self.wrn_block_1.training = self.training
@@ -90,18 +90,19 @@ class Wrn28k(tf.Module):
         x = tf.reduce_mean(x, axis=[1, 2], name='global_avg_pool')
         x = tf.nn.dropout(x, rate=config.DROPOUT_RATE)
         x = self.dense(x)
-        x = tf.cast(x, dtype=tf.float32, name='logits')
+        x = tf.cast(x, dtype=config.DTYPE, name='logits')
         return x
 
 
 if __name__ == '__main__':
-    img = tf.random.normal([1, config.IMG_SIZE, config.IMG_SIZE, 3])
+    img = tf.random.normal([1, config.IMG_SIZE, config.IMG_SIZE, 3], dtype=config.DTYPE)
     model = Wrn28k(num_inp_filters=3, k=2, training=True)
     model.training = False
+
     # print(len(model.trainable_variables))
     output = model(x=img)
-    print(model.bn.moving_variance)
-    print(model.bn.moving_mean)
+    # print(model.bn.moving_variance)
+    # print(model.bn.moving_mean)
     # print(output.shape)
 
     # checkpoint_dir = './weights'

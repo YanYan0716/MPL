@@ -37,6 +37,7 @@ if __name__ == '__main__':
 
     # 构建模型
     teacher = Wrn28k(num_inp_filters=3, k=2)
+    teacher = keras.applications.resnet50()
 
     # 定义损失函数，
     t_label_loss = tf.losses.CategoricalCrossentropy(
