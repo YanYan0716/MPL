@@ -5,13 +5,15 @@ from Conv2d import Conv2d
 
 import config
 
+
 class WrnBlock(tf.Module):
-    def __init__(self, num_inp_filters, num_out_filters, stride, training=True, name='wrn_block'):
+    def __init__(self, num_inp_filters, num_out_filters, stride, training=True, name='wrn_block', activate_before_residual=False):
         super(WrnBlock, self).__init__(name=name)
         self.num_inp_filters = num_inp_filters
         self.num_out_filters = num_out_filters
         self.stride = stride
         self.training = training
+        self.activate_before_residual = activate_before_residual
         self.batch_norm_1 = BatchNorm(
             size=self.num_inp_filters,
             training=self.training,
@@ -38,7 +40,7 @@ class WrnBlock(tf.Module):
             name='conv_3_2',
             training=self.training
         )
-        if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+        if (self.stride == 2 or self.num_out_filters != self.num_inp_filters) and self.activate_before_residual:
             self.residual = Conv2d(
                 num_inp_filters=self.num_inp_filters,
                 filter_size=1,
@@ -54,12 +56,12 @@ class WrnBlock(tf.Module):
         self.batch_norm_2.training = self.training
         self.conv2d_2.training = self.training
 
-        if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+        if (self.stride == 2 or self.num_out_filters != self.num_inp_filters) and self.activate_before_residual:
             x = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
         else:
             x_ = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
 
-        if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+        if (self.stride == 2 or self.num_out_filters != self.num_inp_filters) and self.activate_before_residual:
             x_ = tf.nn.leaky_relu(self.batch_norm_2(self.conv2d_1(x)), alpha=0.2)
         else:
             x_ = tf.nn.leaky_relu(self.batch_norm_2(self.conv2d_1(x_)), alpha=0.2)
@@ -68,7 +70,7 @@ class WrnBlock(tf.Module):
             x_ = tf.nn.dropout(x_, rate=config.DROPOUT_RATE)
         x_ = self.conv2d_2(x_)
 
-        if self.stride == 2 or self.num_out_filters != self.num_inp_filters:
+        if (self.stride == 2 or self.num_out_filters != self.num_inp_filters) and self.activate_before_residual:
             x = self.residual(x)
             x = tf.math.add(x, x_)
         else:

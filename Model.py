@@ -24,31 +24,31 @@ class Wrn28k(tf.Module):
             stride=1,
         )
         self.wrn_block_1 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
-                                    name='wrn_block_1')
+                                    name='wrn_block_1', activate_before_residual=True)
         self.wrn_block_2 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
-                                    name='wrn_block_2')
+                                    name='wrn_block_2', activate_before_residual=True)
         self.wrn_block_3 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
-                                    name='wrn_block_3')
+                                    name='wrn_block_3', activate_before_residual=True)
         self.wrn_block_4 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[1], stride=1, training=training,
-                                    name='wrn_block_4')
+                                    name='wrn_block_4', activate_before_residual=True)
 
         self.wrn_block_5 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[2], stride=2, training=training,
-                                    name='wrn_block_5')
+                                    name='wrn_block_5', activate_before_residual=False)
         self.wrn_block_6 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
-                                    name='wrn_block_6')
+                                    name='wrn_block_6', activate_before_residual=False)
         self.wrn_block_7 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
-                                    name='wrn_block_7')
+                                    name='wrn_block_7', activate_before_residual=False)
         self.wrn_block_8 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
-                                    name='wrn_block_8')
+                                    name='wrn_block_8', activate_before_residual=False)
 
         self.wrn_block_9 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[3], stride=2, training=training,
-                                    name='wrn_block_9')
+                                    name='wrn_block_9', activate_before_residual=False)
         self.wrn_block_10 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
-                                     name='wrn_block_10')
+                                     name='wrn_block_10', activate_before_residual=False)
         self.wrn_block_11 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
-                                     name='wrn_block_11')
+                                     name='wrn_block_11', activate_before_residual=False)
         self.wrn_block_12 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
-                                     name='wrn_block_12')
+                                     name='wrn_block_12', activate_before_residual=False)
 
         self.bn = BatchNorm(size=self.s[3], training=self.training)
         self.dense = Dense(num_inp_filters=self.s[3], num_out_filters=config.NUM_CLASSES)
