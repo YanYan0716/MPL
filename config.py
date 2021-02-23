@@ -1,6 +1,6 @@
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 # LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
 # UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
@@ -35,7 +35,7 @@ TEA_CONTINUE = False
 STD_CONTINUE  = False
 TEA_LOAD_PATH = './weights/T_'
 STD_LOAD_PATH = './weights/S_'
-MAX_EPOCHS = 9000
+MAX_EPOCHS = 19200
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 20000
@@ -56,13 +56,13 @@ UDA_THRESHOLD = 0.6
 # about learning rate
 STUDENT_LR = 0.05  # student
 STUDENT_LR_WARMUP_STEPS = 20000
-STUDENT_LR_WAIT_STEPS = 2000
+STUDENT_LR_WAIT_STEPS = 12000
 TEACHER_LR = 0.05  # teacher
 TEACHER_LR_WARMUP_STEPS = 20000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
-NUM_DECAY_STEPS = 6000
+NUM_DECAY_STEPS = 3000
 LR_DECAY_RATE = 0.97
 
 # about optimizer
