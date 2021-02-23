@@ -50,7 +50,7 @@ if __name__ == '__main__':
     Tea_lr_fun = LearningRate(
         TEACHER_LR,
         TEACHER_LR_WARMUP_STEPS,
-        TEACHER_NUM_WAIT_STEPS
+        TEACHER_NUM_WAIT_STEPS,
     )
 
     global_step = 0
