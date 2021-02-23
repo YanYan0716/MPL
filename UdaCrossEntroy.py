@@ -11,7 +11,7 @@ from Model import Wrn28k
 
 
 def UdaCrossEntroy(all_logits, l_labels, global_step):
-    batch_size = 1 #config.BATCH_SIZE
+    batch_size = config.BATCH_SIZE
     uda_data = config.UDA_DATA
     logits = {}
     labels = {}
