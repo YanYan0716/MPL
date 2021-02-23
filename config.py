@@ -2,7 +2,7 @@ import tensorflow as tf
 
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 # LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
 # UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
@@ -40,7 +40,7 @@ STD_LOAD_PATH = './weights/S_'
 MAX_EPOCHS = 38400
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
-UDA_STEPS = 40000
+UDA_STEPS = 50000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
 
