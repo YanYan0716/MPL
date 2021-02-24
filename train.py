@@ -177,8 +177,8 @@ if __name__ == '__main__':
                 )
                 if uda_weight < 0:
                     uda_weight = 0
-                # if StudentLR == 0:
-                #     dot_product = 0
+                if StudentLR == 0:
+                    dot_product = 0
                 teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl'] * dot_product
@@ -191,8 +191,6 @@ if __name__ == '__main__':
                 TLOSS_3 += cross_entroy['mpl'] * dot_product
             # 反向传播，更新teacher的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            if epoch < 20:
-                TeacherLR = 0.005
             TeaOptim = tfa.optimizers.SGDW(
                 learning_rate=TeacherLR,
                 momentum=0.9,
