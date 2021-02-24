@@ -98,10 +98,10 @@ if __name__ == '__main__':
         TLOSS_3 = 0
         SLOSS = 0
         for batch_idx, (l_images, l_labels, ori_images, aug_images) in enumerate(ds_train):
-            if epoch < 20:
-                global_step = 0
-            else:
-                global_step += 1
+            # if epoch < 20:
+            #     global_step = 0
+            # else:
+            global_step += 1
             all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [15, 32, 32, 3]
             u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
             # step1：经过teacher，得到输出
@@ -182,8 +182,8 @@ if __name__ == '__main__':
                 teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl'] * dot_product
-                if epoch < 20:
-                    teacher_loss = cross_entroy['l']+cross_entroy['mpl']*dot_product
+                # if epoch < 20:
+                #     teacher_loss = cross_entroy['l']+cross_entroy['mpl']*dot_product
 
                 TLOSS += teacher_loss
                 TLOSS_1 += (cross_entroy['u'] * uda_weight)
