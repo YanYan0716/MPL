@@ -33,7 +33,7 @@ class Wrn28k(tf.Module):
                                     name='wrn_block_4', activate_before_residual=True)
 
         self.wrn_block_5 = WrnBlock(num_inp_filters=self.s[1], num_out_filters=self.s[2], stride=2, training=training,
-                                    name='wrn_block_5', activate_before_residual=False)
+                                    name='wrn_block_5', activate_before_residual=True)
         self.wrn_block_6 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
                                     name='wrn_block_6', activate_before_residual=False)
         self.wrn_block_7 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[2], stride=1, training=training,
@@ -42,7 +42,7 @@ class Wrn28k(tf.Module):
                                     name='wrn_block_8', activate_before_residual=False)
 
         self.wrn_block_9 = WrnBlock(num_inp_filters=self.s[2], num_out_filters=self.s[3], stride=2, training=training,
-                                    name='wrn_block_9', activate_before_residual=False)
+                                    name='wrn_block_9', activate_before_residual=True)
         self.wrn_block_10 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
                                      name='wrn_block_10', activate_before_residual=False)
         self.wrn_block_11 = WrnBlock(num_inp_filters=self.s[3], num_out_filters=self.s[3], stride=1, training=training,
