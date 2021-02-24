@@ -60,14 +60,14 @@ class WrnBlock(tf.Module):
 
         # self.equalInOut=False 执行line63，否则执行line64
         if not self.equalInOut and (self.activate_before_residual == True):
-            x = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
+            x = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.1)
         else:
-            x_ = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
+            x_ = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.1)
 
         x_ = tf.nn.leaky_relu(
             # self.batch_norm_2(self.conv2d_1(x_ if self.equalInOut else x)),
             self.batch_norm_2(self.conv2d_1(x if not self.equalInOut and (self.activate_before_residual == True) else x_)),
-            alpha=0.2
+            alpha=0.1
         )
 
         if config.DROPOUT_RATE > 0:
