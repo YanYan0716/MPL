@@ -28,17 +28,27 @@ class BatchNorm(tf.Module):
         super(BatchNorm, self).__init__(name=name)
         self.size = size
         self.training = training
-        self.gamma = tf.Variable(initial_value=tf.ones([self.size], dtype=config.DTYPE), trainable=True, name='gamma')
+        self.gamma = tf.Variable(
+            initial_value=tf.ones_initializer()(shape=[self.size], dtype=config.DTYPE),
+            # initial_value=tf.ones([self.size], dtype=config.DTYPE),
+            trainable=True,
+            name='gamma')
         # self.gamma = shared_weight(w=self.gamma, num_cores=config.NUM_XLA_SHARDS)
-        self.bate = tf.Variable(initial_value=tf.zeros([self.size], dtype=config.DTYPE), trainable=True, name='bate')
+        self.bate = tf.Variable(
+            initial_value=tf.zeros_initializer()(shape=[self.size], dtype=config.DTYPE),
+            # initial_value=tf.zeros([self.size], dtype=config.DTYPE),
+            trainable=True,
+            name='bate')
         # self.bate = shared_weight(w=self.bate, num_cores=config.NUM_XLA_SHARDS)
         self.moving_mean = tf.Variable(
-            initial_value=tf.zeros([self.size], dtype = config.DTYPE),
+            initial_value=tf.zeros_initializer()(shape=[self.size], dtype=config.DTYPE),
+            # initial_value=tf.zeros([self.size], dtype = config.DTYPE),
             trainable=False,
             name='moving_mean',
         )
         self.moving_variance = tf.Variable(
-            initial_value=tf.ones([self.size], dtype = config.DTYPE),
+            initial_value=tf.ones_initializer()(shape=[self.size], dtype=config.DTYPE),
+            # initial_value=tf.ones([self.size], dtype = config.DTYPE),
             trainable=False,
             name='moving_variance',
         )

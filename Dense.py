@@ -17,19 +17,24 @@ class Dense(tf.Module):
         self.training = training
         init_range = 1. / tf.math.sqrt(tf.cast(self.num_out_filters, config.DTYPE))
         self.w = tf.Variable(
-            tf.random.uniform(
-                shape=[self.num_inp_filters, self.num_out_filters],
+            initial_value=tf.random_uniform_initializer(
                 minval=-init_range,
                 maxval=init_range,
-                dtype=config.DTYPE,
-            ),
+            )(shape=[self.num_inp_filters, self.num_out_filters], dtype=config.DTYPE),
+            # tf.random.uniform(
+            #     shape=[self.num_inp_filters, self.num_out_filters],
+            #     minval=-init_range,
+            #     maxval=init_range,
+            #     dtype=config.DTYPE,
+            # ),
             name='w',
             trainable=True
         )
         # self.w = shared_weight(self.w, num_cores=config.NUM_XLA_SHARDS)
         if self.use_bias:
             self.b = tf.Variable(
-                tf.zeros([self.num_out_filters], dtype=config.DTYPE),
+                initial_value=tf.zeros_initializer()(shape=[self.num_out_filters], dtype=config.DTYPE),
+                # tf.zeros([self.num_out_filters], dtype=config.DTYPE),
                 name='b',
                 trainable=True
             )
