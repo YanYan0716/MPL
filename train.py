@@ -132,11 +132,11 @@ if __name__ == '__main__':
 
                 cross_entroy['s_on_l_old'] = tf.reduce_sum(cross_entroy['s_on_l_old']) / \
                                              tf.convert_to_tensor(config.BATCH_SIZE, dtype=tf.float32)
-                shadow = tf.Variable(
-                    initial_value=cross_entroy['s_on_l_old'],
-                    trainable=False,
-                    name='cross_entroy_old'
-                )
+                # shadow = tf.Variable(
+                #     initial_value=cross_entroy['s_on_l_old'],
+                #     trainable=False,
+                #     name='cross_entroy_old'
+                # )
             # 反向传播，更新student的参数-------
             StudentLR = Std_lr_fun.__call__(global_step=global_step)
             StdOptim = tfa.optimizers.SGDW(
@@ -157,8 +157,9 @@ if __name__ == '__main__':
             )
             cross_entroy['s_on_l_new'] = tf.reduce_sum(cross_entroy['s_on_l_new']) / \
                                          tf.convert_to_tensor(config.BATCH_SIZE, dtype=config.DTYPE)
-            dot_product = cross_entroy['s_on_l_new'] - shadow
-            moving_dot_product = keras.initializers.GlorotNormal()(shape=dot_product.shape)
+            dot_product = cross_entroy['s_on_l_new'] - cross_entroy['s_on_l_old']
+            limit = 3.0**(0.5)
+            moving_dot_product = tf.random_uniform_initializer(minval=-limit, maxval=limit)(shape=dot_product.shape)
             moving_dot_product = tf.Variable(initial_value=moving_dot_product, trainable=False, dtype=config.DTYPE)
             moving_dot_product_update = moving_dot_product.assign_sub(0.01 * (moving_dot_product - dot_product))
             dot_product = dot_product - moving_dot_product
