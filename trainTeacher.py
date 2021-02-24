@@ -90,7 +90,7 @@ if __name__ == '__main__':
                 nesterov=True,
             )
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
-            GTea, _ =  tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
+            # GTea, _ =  tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
 
             if (batch_idx + 1) % config.LOG_EVERY == 0:
