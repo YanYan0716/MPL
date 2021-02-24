@@ -40,7 +40,7 @@ STD_LOAD_PATH = './weights/S_'
 MAX_EPOCHS = 38400
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
-UDA_STEPS = 50000
+UDA_STEPS = 40000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
 
@@ -52,7 +52,7 @@ TEST_MODEL_PATH = './weights/S'
 # about UdaCrossEntroy
 UDA_DATA = 7
 LABEL_SMOOTHING = 0.15
-UDA_TEMP = 0.75
+UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
 
 # about learning rate
