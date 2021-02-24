@@ -58,14 +58,16 @@ class WrnBlock(tf.Module):
         self.batch_norm_2.training = self.training
         self.conv2d_2.training = self.training
 
-        if not self.equalInOut:
-            x = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
+        # self.equalInOut=False 执行line63，否则执行line64
+        if not self.equalInOut and (self.activate_before_residual == True):
+            x = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.1)
         else:
-            x_ = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.2)
+            x_ = tf.nn.leaky_relu(self.batch_norm_1(x), alpha=0.1)
 
         x_ = tf.nn.leaky_relu(
-            self.batch_norm_2(self.conv2d_1(x_ if self.equalInOut else x)),
-            alpha=0.2
+            # self.batch_norm_2(self.conv2d_1(x_ if self.equalInOut else x)),
+            self.batch_norm_2(self.conv2d_1(x if not self.equalInOut and (self.activate_before_residual == True) else x_)),
+            alpha=0.1
         )
 
         if config.DROPOUT_RATE > 0:
@@ -115,8 +117,9 @@ def loss(input):
 
 
 if __name__ == '__main__':
-    img = tf.random.normal([1, 32, 32, 3], dtype=config.DTYPE)
-    model = WrnBlock(num_inp_filters=3, num_out_filters=32, stride=1, training=True, name='wrn_block_1', activate_before_residual=True)
+    img = tf.random.normal([1, 32, 32, 32], dtype=config.DTYPE)
+    model = WrnBlock(num_inp_filters=32, num_out_filters=32, stride=1, training=True, name='wrn_block_1',
+                     activate_before_residual=True)
     opt = tf.keras.optimizers.SGD(learning_rate=0.001)
 
     with tf.GradientTape() as tape:
