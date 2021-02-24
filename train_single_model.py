@@ -5,6 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 from tensorflow import keras
 import pandas as pd
+import tensorflow_addons as tfa
 
 from Model import Wrn28k
 from learningRate import LearningRate
@@ -74,10 +75,11 @@ if __name__ == '__main__':
                 SLOSS += cross_entroy
             # 反向传播，更新参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            TeaOptim = keras.optimizers.SGD(
+            TeaOptim = tfa.optimizers.SGDW(
                 learning_rate=TeacherLR,
                 momentum=0.9,
                 nesterov=True,
+                weight_decay=5e-4,
             )
             # TeaOptim = keras.optimizers.Adam(lr=3e-4)
             GStud_unlabel = s_tape.gradient(cross_entroy, teacher.trainable_variables)
