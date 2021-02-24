@@ -67,7 +67,7 @@ class WrnBlock(tf.Module):
         x_ = tf.nn.leaky_relu(
             # self.batch_norm_2(self.conv2d_1(x_ if self.equalInOut else x)),
             self.batch_norm_2(self.conv2d_1(x if not self.equalInOut and (self.activate_before_residual == True) else x_)),
-            alpha=0.1
+            alpha=0.2
         )
 
         if config.DROPOUT_RATE > 0:
