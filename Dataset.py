@@ -43,9 +43,9 @@ def label_image(img_file, label):
     img = tf.image.resize(img, (config.IMG_SIZE + 5, config.IMG_SIZE + 5))
     img = tf.image.random_crop(img, (config.IMG_SIZE, config.IMG_SIZE, 3))
     img = tf.cast(img, config.DTYPE) / 255.0
-    mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465], dtype=config.DTYPE), axis=0)
-    std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616], dtype=config.DTYPE), axis=0)
-    img = (img-mean)/std
+    # mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465], dtype=config.DTYPE), axis=0)
+    # std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616], dtype=config.DTYPE), axis=0)
+    # img = (img-mean)/std
     # 对标签的处理
     label = tf.raw_ops.OneHot(indices=label, depth=config.NUM_CLASSES, on_value=1.0, off_value=0)
     label = tf.cast(label, dtype=config.DTYPE)
@@ -77,11 +77,11 @@ def unlabel_image(img_file, label):
     aug_image = tf.cast(aug_image, config.DTYPE) / 255.0
     ori_image = tf.cast(ori_image, config.DTYPE) / 255.0
 
-    mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465], dtype=config.DTYPE), axis=0)
-    std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616], dtype=config.DTYPE), axis=0)
-
-    aug_image = (aug_image-mean)/std
-    ori_image = (ori_image-mean)/std
+    # mean = tf.expand_dims(tf.convert_to_tensor([0.4914, 0.4822, 0.4465], dtype=config.DTYPE), axis=0)
+    # std = tf.expand_dims(tf.convert_to_tensor([0.2471, 0.2435, 0.2616], dtype=config.DTYPE), axis=0)
+    #
+    # aug_image = (aug_image-mean)/std
+    # ori_image = (ori_image-mean)/std
 
     return {'ori_images': ori_image, 'aug_images': aug_image}
 

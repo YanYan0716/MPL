@@ -16,7 +16,7 @@ import config
 
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
-    BATCH_SIZE = 128
+    BATCH_SIZE = 256
     MAX_EPOCHS = 300
     TEACHER_LR = 0.01
     TEACHER_LR_WARMUP_STEPS = 3000
