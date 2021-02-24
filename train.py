@@ -169,7 +169,7 @@ if __name__ == '__main__':
                 cross_entroy['mpl'] = tf.reduce_sum(cross_entroy['mpl']) / \
                                       tf.convert_to_tensor(config.BATCH_SIZE * config.UDA_DATA, dtype=config.DTYPE)
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
-                    1., tf.cast(global_step-10000, config.DTYPE) / float(config.UDA_STEPS)
+                    1., tf.cast(global_step, config.DTYPE) / float(config.UDA_STEPS)
                 )
                 if uda_weight < 0:
                     uda_weight = 0
