@@ -178,8 +178,8 @@ if __name__ == '__main__':
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
                     1., tf.cast(global_step, config.DTYPE) / float(config.UDA_STEPS)
                 )
-                if StudentLR == 0:
-                    dot_product = 0
+                # if StudentLR == 0:
+                #     dot_product = 0
                 teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl'] * dot_product
