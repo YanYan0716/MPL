@@ -5,6 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 from tensorflow import keras
 import pandas as pd
+import tensorflow_addons as tfa
 
 import config
 from Model import Wrn28k
@@ -84,10 +85,11 @@ if __name__ == '__main__':
                 TLOSS_2 += cross_entroy['l']
             # 反向传播，更新teacher的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            TeaOptim = keras.optimizers.SGD(
+            TeaOptim = tfa.optimizers.SGDW(
                 learning_rate=TeacherLR,
                 momentum=0.9,
                 nesterov=True,
+                weight_decay=5e-4,
             )
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             # GTea, _ =  tf.clip_by_global_norm(GTea, config.GRAD_BOUND)

@@ -86,7 +86,7 @@ class Wrn28k(tf.Module):
         x = self.wrn_block_12(x)
 
         x = self.bn(x)
-        x = tf.nn.leaky_relu(x, alpha=0.1)
+        x = tf.nn.leaky_relu(x, alpha=0.2)
         x = tf.reduce_mean(x, axis=[1, 2], name='global_avg_pool')
         x = tf.nn.dropout(x, rate=config.DROPOUT_RATE)
         x = self.dense(x)

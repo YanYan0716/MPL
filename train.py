@@ -166,7 +166,10 @@ if __name__ == '__main__':
             dot_product = tf.stop_gradient(dot_product)
             # step4: 求teacher的损失函数
             with t_tape:
+                # label = tf.math.argmax(tf.nn.softmax(logits['aug'], axis=-1), axis=-1)
+                # label = tf.raw_ops.OneHot(indices=label, depth=config.NUM_CLASSES, on_value=1.0, off_value=0)
                 cross_entroy['mpl'] = mpl_loss(
+                    # y_true=tf.stop_gradient(label),
                     y_true=tf.stop_gradient(tf.nn.softmax(logits['aug'], axis=-1)),
                     y_pred=logits['aug']
                 )  # 恒正
@@ -175,15 +178,11 @@ if __name__ == '__main__':
                 uda_weight = config.UDA_WEIGHT * tf.math.minimum(
                     1., tf.cast(global_step, config.DTYPE) / float(config.UDA_STEPS)
                 )
-                if uda_weight < 0:
-                    uda_weight = 0
                 if StudentLR == 0:
                     dot_product = 0
                 teacher_loss = cross_entroy['u'] * uda_weight + \
                                cross_entroy['l'] + \
                                cross_entroy['mpl'] * dot_product
-                # if epoch < 20:
-                #     teacher_loss = cross_entroy['l']+cross_entroy['mpl']*dot_product
 
                 TLOSS += teacher_loss
                 TLOSS_1 += (cross_entroy['u'] * uda_weight)
