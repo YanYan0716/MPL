@@ -37,7 +37,8 @@ if __name__ == '__main__':
     ds_unlabel_train = ds_unlabel_train \
         .map(unlabel_image, num_parallel_calls=AUTOTUNE) \
         .batch(config.BATCH_SIZE * config.UDA_DATA, drop_remainder=True)\
-        .shuffle(buffer_size=50000)
+        .shuffle(buffer_size=50000)\
+        .prefetch(AUTOTUNE)
 
     # 将有标签数据和无标签数据整合成最终的数据形式
     ds_train = tf.data.Dataset.zip((ds_label_train, ds_unlabel_train))

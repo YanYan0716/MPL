@@ -34,7 +34,8 @@ if __name__ == '__main__':
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
         .batch(BATCH_SIZE, drop_remainder=True)\
-        .shuffle(buffer_size=50000)
+        .shuffle(buffer_size=50000)\
+        .prefetch(AUTOTUNE)
 
     # 构建模型
     teacher = Wrn28k(num_inp_filters=3, k=2)
