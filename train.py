@@ -111,11 +111,11 @@ if __name__ == '__main__':
             u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
             # step1：经过teacher，得到输出
             with tf.GradientTape() as t_tape:
-                output = teacher(x=all_images)  # shape=[15, 10]
+                output = teacher(all_images)  # shape=[15, 10]
                 logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels, global_step)
             # step2：1st call student -----------------------------
             with tf.GradientTape() as s_tape:
-                logits['s_on_aug_and_l'] = student(x=u_aug_and_l_images)  # shape=[8, 10]
+                logits['s_on_aug_and_l'] = student(u_aug_and_l_images)  # shape=[8, 10]
                 logits['s_on_u'], logits['s_on_l_old'] = tf.split(
                     logits['s_on_aug_and_l'],
                     [aug_images.shape[0], l_images.shape[0]],
