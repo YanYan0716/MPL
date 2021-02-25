@@ -6,6 +6,7 @@ import tensorflow as tf
 from tensorflow import keras
 import pandas as pd
 import tensorflow_addons as tfa
+from WideResnet import WideResnet
 
 import config
 from Model import Wrn28k
@@ -49,13 +50,15 @@ if __name__ == '__main__':
     if config.TEA_CONTINUE:
         teacher = tf.saved_model.load(config.TEA_LOAD_PATH)
     else:
-        teacher = Wrn28k(num_inp_filters=3, k=2)
+        # teacher = Wrn28k(num_inp_filters=3, k=2)
+        teacher = WideResnet().model()
 
     # 构建student模型
     if config.STD_CONTINUE:
         student = tf.saved_model.load(config.STD_LOAD_PATH)
     else:
-        student = Wrn28k(num_inp_filters=3, k=2)
+        # student = Wrn28k(num_inp_filters=3, k=2)
+        student = WideResnet().model()
 
     # 定义teacher的损失函数，损失函数之一为UdaCrossEntroy
     mpl_loss = tf.losses.CategoricalCrossentropy(
