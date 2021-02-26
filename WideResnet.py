@@ -128,7 +128,7 @@ class WideResnet(keras.Model):
             trainable=self.trainable,
             name=name+'_bn1'
         )
-        self.relu1 = keras.activations.relu
+        self.relu1 = layers.LeakyReLU(alpha=0.2)
 
         self.avgpool = layers.GlobalAveragePooling2D(name=name+'_avgpool')
         self.dense = layers.Dense(
