@@ -58,15 +58,15 @@ UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
 
 # about learning rate
-STUDENT_LR = 0.05  # student
+STUDENT_LR = 0.03  # student
 STUDENT_LR_WARMUP_STEPS = 20000
 STUDENT_LR_WAIT_STEPS = 12000
-TEACHER_LR = 0.05  # teacher
+TEACHER_LR = 0.03  # teacher
 TEACHER_LR_WARMUP_STEPS = 20000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
-NUM_DECAY_STEPS = 3000
+NUM_DECAY_STEPS = 30000
 LR_DECAY_RATE = 0.97
 
 # about optimizer
