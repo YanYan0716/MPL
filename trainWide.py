@@ -37,7 +37,8 @@ if __name__ == '__main__':
     labels = df_unlabel['label'].values
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_unlabel_train = ds_unlabel_train \
-        .map(unlabel_image, num_parallel_calls=AUTOTUNE) \
+        .map(unlabel_image, num_parallel_calls=AUTOTUNE)\
+        .cache()\
         .batch(config.BATCH_SIZE * config.UDA_DATA, drop_remainder=True)\
         .shuffle(buffer_size=50000)\
         .prefetch(AUTOTUNE)

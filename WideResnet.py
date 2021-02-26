@@ -27,14 +27,14 @@ class BasicBlock(layers.Layer):
             trainable=self.trainable,
             name=name+'_bn1'
         )
-        self.relu1 = layers.LeakyReLU(alpha=0.1)
+        self.relu1 = layers.LeakyReLU(alpha=0.2)
         self.conv1 = layers.Conv2D(
             filters=self.out_channels,
             kernel_size=3,
             strides=self.stride,
             padding='same',
             use_bias=False,
-            kernel_initializer='he_normal',
+            kernel_initializer=keras.initializers.HeNormal(),
             kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name+'_conv1',
@@ -44,7 +44,7 @@ class BasicBlock(layers.Layer):
             trainable=self.trainable,
             name=name+'_bn2'
         )
-        self.relu2 = layers.LeakyReLU(alpha=0.1)
+        self.relu2 = layers.LeakyReLU(alpha=0.2)
         self.dropout = layers.Dropout(
             rate=self.dropout,
             trainable=self.trainable,
@@ -56,7 +56,7 @@ class BasicBlock(layers.Layer):
             strides=1,
             padding='same',
             use_bias=False,
-            kernel_initializer='he_normal',
+            kernel_initializer=keras.initializers.HeNormal(),
             kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name+'_conv2',
@@ -68,7 +68,7 @@ class BasicBlock(layers.Layer):
                 strides=self.stride,
                 padding='same',
                 use_bias=False,
-                kernel_initializer='he_normal',
+                kernel_initializer=keras.initializers.HeNormal(),
                 kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
                 trainable=self.trainable,
                 name=name+'_shortcut'
@@ -103,7 +103,7 @@ class WideResnet(keras.Model):
             strides=1,
             padding='same',
             use_bias=False,
-            kernel_initializer='he_normal',
+            kernel_initializer=keras.initializers.HeNormal(),
             kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name + '_conv1',
@@ -128,10 +128,12 @@ class WideResnet(keras.Model):
             trainable=self.trainable,
             name=name+'_bn1'
         )
-        self.relu1 = layers.LeakyReLU(alpha=0.1)
+        self.relu1 = keras.activations.relu
+
         self.avgpool = layers.GlobalAveragePooling2D(name=name+'_avgpool')
         self.dense = layers.Dense(
             units=config.NUM_CLASS,
+            kernel_initializer=keras.initializers.RandomNormal(mean=0., stddev=1.),
             # activation='softmax',
             kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             name=name+'_dense',
