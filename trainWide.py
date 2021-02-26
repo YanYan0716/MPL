@@ -89,11 +89,11 @@ if __name__ == '__main__':
                 TLOSS_2 += cross_entroy['l']
             # 反向传播，更新teacher的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
-            TeaOptim = tfa.optimizers.SGDW(
+            TeaOptim = tf.keras.optimizers.SGD(
                 learning_rate=TeacherLR,
                 momentum=0.9,
                 nesterov=True,
-                weight_decay=5e-4,
+                # weight_decay=5e-4,
             )
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
