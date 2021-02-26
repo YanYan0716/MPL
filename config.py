@@ -16,7 +16,7 @@ LABEL_FILE_PATH = '../input/cifar10/cifar/label4000.csv'  # kaggle
 UNLABEL_FILE_PATH = '../input/cifar10/cifar/train.csv'
 
 
-AUGMENT_MAGNITUDE = 10
+AUGMENT_MAGNITUDE = 16
 SHUFFLE_SIZE = BATCH_SIZE * 16
 DATA_LEN = 4000  # 数据集的总长度
 
