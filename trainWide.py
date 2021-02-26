@@ -75,7 +75,7 @@ if __name__ == '__main__':
             u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
             # step1：经过teacher，得到输出
             with tf.GradientTape() as t_tape:
-                output = teacher(x=all_images)  # shape=[15, 10]
+                output = teacher(all_images)  # shape=[15, 10]
                 logits, labels, masks, cross_entroy = UdaCrossEntroy(output, l_labels, global_step)
 
             # step4: 求teacher的损失函数
