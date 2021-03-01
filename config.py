@@ -32,8 +32,8 @@ NUM_CLASS = 10
 # about training
 LOG_EVERY = 20
 SAVE_EVERY = 5
-TEA_SAVE_PATH = './weights/T_'
-STD_SAVE_PATH = './weights/S_'
+TEA_SAVE_PATH = './weights/T'
+STD_SAVE_PATH = './weights/S'
 
 TEA_CONTINUE = False
 STD_CONTINUE  = False

@@ -231,18 +231,13 @@ if __name__ == '__main__':
             print(f'testing ... acc: {acc}')
         # 保存weights
         if Tacc > TBacc:
-            Tsave_path = config.TEA_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
-            Ssave_path = config.STD_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
-
-            tf.saved_model.save(teacher, Tsave_path)
+            Tsave_path = config.TEA_SAVE_PATH  # + str(epoch + 1) + '_' + str(batch_idx + 1)
+            teacher.save_weights(Tsave_path)
+            # tf.saved_model.save(teacher, Tsave_path)
             TBacc = Tacc
-                # tf.saved_model.save(student, Ssave_path)
-            print(f'saving for TBacc {TBacc}, Tpath:{Tsave_path}, Spath:{Ssave_path}')
-
-        # if ((epoch + 1) % config.SAVE_EVERY == 0) and (StudentLR > 0):
-        #     Tsave_path = config.TEA_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
-        #     Ssave_path = config.STD_SAVE_PATH + str(epoch + 1) + '_' + str(batch_idx + 1)
-        #
-        #     tf.saved_model.save(teacher, Tsave_path)
-        #     tf.saved_model.save(student, Ssave_path)
-        #     print(f'saving for epoch {epoch}, Tpath:{Tsave_path}, Spath:{Ssave_path}')
+            print(f'saving for TBacc {TBacc}, Tpath:{Tsave_path}')
+        if Sacc > SBacc:
+            Ssave_path = config.STD_SAVE_PATH  # + str(epoch + 1) + '_' + str(batch_idx + 1)
+            student.save_weights(Ssave_path)
+            SBacc = Sacc
+            print(f'saving for SBacc {SBacc}, Spath:{Ssave_path}')
