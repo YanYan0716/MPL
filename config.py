@@ -45,6 +45,7 @@ UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 15000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
+CONTINUE_EPOCH = 150
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'
