@@ -219,6 +219,7 @@ if __name__ == '__main__':
                     TLOSS_2 = 0
                     TLOSS_3 = 0
                     SLOSS = 0
+        if epoch > config.CONTINUE_EPOCH:
             # 测试teacher在test上的acc
             if epoch % 5 == 0:
                 Tacc = test(teacher)
