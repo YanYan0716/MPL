@@ -35,16 +35,18 @@ SAVE_EVERY = 5
 TEA_SAVE_PATH = './weights/T'
 STD_SAVE_PATH = './weights/S'
 
-TEA_CONTINUE = True
-STD_CONTINUE  = False
-TEA_LOAD_PATH = './weights/T_'
-STD_LOAD_PATH = './weights/S_'
 MAX_EPOCHS = 19200
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 15000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
+
+# continue train
+TEA_CONTINUE = True
+STD_CONTINUE = False
+TEA_LOAD_PATH = '../weights/weights/T_'
+STD_LOAD_PATH = '../weights/weights/S_'
 CONTINUE_EPOCH = 150
 
 # about testing
