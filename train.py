@@ -51,6 +51,7 @@ if __name__ == '__main__':
         print('continue teacher training')
         teacher = WideResnet().model()
         teacher.load_weights(config.TEA_LOAD_PATH)
+        teacher.training = True
     else:
         # teacher = Wrn28k(num_inp_filters=3, k=2)
         teacher = WideResnet().model()
@@ -60,6 +61,7 @@ if __name__ == '__main__':
         print('continue student training')
         student = WideResnet().model()
         student.load_weights(config.STD_LOAD_PATH)
+        student.training = True
         # student = tf.saved_model.load(config.STD_LOAD_PATH)
     else:
         # student = Wrn28k(num_inp_filters=3, k=2)
@@ -101,7 +103,8 @@ if __name__ == '__main__':
     Tacc = 0
     SBacc = 0
     Sacc = 0
-    for epoch in range(config.MAX_EPOCHS-config.CONTINUE_EPOCH):
+    epochs = config.MAX_EPOCHS - config.CONTINUE_EPOCH
+    for epoch in range(epochs):
         TLOSS = 0
         TLOSS_1 = 0
         TLOSS_2 = 0
@@ -209,7 +212,7 @@ if __name__ == '__main__':
                 TLOSS_2 = TLOSS_2 / config.LOG_EVERY
                 TLOSS_3 = TLOSS_3 / config.LOG_EVERY
                 SLOSS = SLOSS / config.LOG_EVERY
-                print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % config.MAX_EPOCHS
+                print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % epochs
                       + '[U:%.4f' % (TLOSS_1) + ', L:%.4f' % (TLOSS_2) + ', M:%.4f' % (
                           TLOSS_3) + ']' + '[TLoss: %.4f]' % TLOSS + '/[SLoss: %.4f]' % SLOSS
                       + '\t[TLR: %.6f' % TeacherLR + ']/[SLR: %.6f]' % StudentLR)
