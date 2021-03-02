@@ -48,8 +48,9 @@ if __name__ == '__main__':
 
     # 构建teacher模型
     if config.TEA_CONTINUE:
+        print('continue teacher training')
         teacher = WideResnet().model()
-        teacher.load_weights('./weights/T')
+        teacher.load_weights(config.TEA_LOAD_PATH)
     else:
         # teacher = Wrn28k(num_inp_filters=3, k=2)
         teacher = WideResnet().model()
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     # 构建student模型
     if config.STD_CONTINUE:
         student = WideResnet().model()
-        student.load_weights('./weights/S')
+        student.load_weights(config.STD_LOAD_PATH)
         # student = tf.saved_model.load(config.STD_LOAD_PATH)
     else:
         # student = Wrn28k(num_inp_filters=3, k=2)
