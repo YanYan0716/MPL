@@ -106,9 +106,6 @@ if __name__ == '__main__':
         TLOSS_3 = 0
         SLOSS = 0
         for batch_idx, (l_images, l_labels, ori_images, aug_images) in enumerate(ds_train):
-            # if epoch < 20:
-            #     global_step = 0
-            # else:
             global_step += 1
             if epoch <= config.CONTINUE_EPOCH:
                 pass

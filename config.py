@@ -35,7 +35,7 @@ SAVE_EVERY = 5
 TEA_SAVE_PATH = './weights/T'
 STD_SAVE_PATH = './weights/S'
 
-TEA_CONTINUE = False
+TEA_CONTINUE = True
 STD_CONTINUE  = False
 TEA_LOAD_PATH = './weights/T_'
 STD_LOAD_PATH = './weights/S_'
