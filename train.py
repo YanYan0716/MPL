@@ -57,6 +57,7 @@ if __name__ == '__main__':
 
     # 构建student模型
     if config.STD_CONTINUE:
+        print('continue student training')
         student = WideResnet().model()
         student.load_weights(config.STD_LOAD_PATH)
         # student = tf.saved_model.load(config.STD_LOAD_PATH)

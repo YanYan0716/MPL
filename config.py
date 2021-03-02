@@ -45,8 +45,8 @@ GRAD_BOUND = 1e9
 # continue train
 TEA_CONTINUE = True
 STD_CONTINUE = False
-TEA_LOAD_PATH = '../weights/weights/T_'
-STD_LOAD_PATH = '../weights/weights/S_'
+TEA_LOAD_PATH = '../weights/weights/T'
+STD_LOAD_PATH = '../weights/weights/S'
 CONTINUE_EPOCH = 150
 
 # about testing
