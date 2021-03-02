@@ -227,8 +227,8 @@ if __name__ == '__main__':
             print(f'testing teacher model ... acc: {Tacc}')
         # 测试student在test上的acc，当student开始训练的时候
         if (StudentLR > 0) and (epoch % 5 == 0):
-            acc = test(student)
-            print(f'testing ... acc: {acc}')
+            Sacc = test(student)
+            print(f'testing ... acc: {Sacc}')
         # 保存weights
         if Tacc > TBacc:
             Tsave_path = config.TEA_SAVE_PATH  # + str(epoch + 1) + '_' + str(batch_idx + 1)
