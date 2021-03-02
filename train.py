@@ -95,13 +95,13 @@ if __name__ == '__main__':
         config.STUDENT_LR_WAIT_STEPS
     )
 
-    global_step = 0
-    print('start training ...')
+    global_step = 62*config.CONTINUE_EPOCH
+    print('start training from global step...')
     TBacc = 0
     Tacc = 0
     SBacc = 0
     Sacc = 0
-    for epoch in range(config.MAX_EPOCHS):
+    for epoch in range(config.MAX_EPOCHS-config.CONTINUE_EPOCH):
         TLOSS = 0
         TLOSS_1 = 0
         TLOSS_2 = 0
@@ -109,9 +109,7 @@ if __name__ == '__main__':
         SLOSS = 0
         for batch_idx, (l_images, l_labels, ori_images, aug_images) in enumerate(ds_train):
             global_step += 1
-            if epoch <= config.CONTINUE_EPOCH:
-                print(global_step)
-            else:
+            if global_step:
                 all_images = tf.concat([l_images, ori_images, aug_images], axis=0)  # shape [15, 32, 32, 3]
                 u_aug_and_l_images = tf.concat([aug_images, l_images], axis=0)
                 # step1：经过teacher，得到输出
