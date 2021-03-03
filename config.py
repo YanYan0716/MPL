@@ -47,7 +47,7 @@ TEA_CONTINUE = True
 STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 430
+CONTINUE_EPOCH = 600
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'
@@ -61,15 +61,15 @@ UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
 
 # about learning rate
-STUDENT_LR = 0.005  # student
+STUDENT_LR = 0.01  # student
 STUDENT_LR_WARMUP_STEPS = 10000
 STUDENT_LR_WAIT_STEPS = 20000
-TEACHER_LR = 0.005  # teacher
+TEACHER_LR = 0.01  # teacher
 TEACHER_LR_WARMUP_STEPS = 10000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
-NUM_DECAY_STEPS = 30000
+NUM_DECAY_STEPS = 3000
 LR_DECAY_RATE = 0.97
 
 # about optimizer
