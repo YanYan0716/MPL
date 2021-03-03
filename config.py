@@ -44,10 +44,10 @@ GRAD_BOUND = 1e9
 
 # continue train
 TEA_CONTINUE = True
-STD_CONTINUE = False
+STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 150
+CONTINUE_EPOCH = 280
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'
