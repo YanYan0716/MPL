@@ -212,7 +212,7 @@ if __name__ == '__main__':
                 TLOSS_2 = TLOSS_2 / config.LOG_EVERY
                 TLOSS_3 = TLOSS_3 / config.LOG_EVERY
                 SLOSS = SLOSS / config.LOG_EVERY
-                print(f'global: %4d' % global_step + ',[epoch:%4d/' % epoch + 'EPOCH: %4d] \t' % epochs
+                print(f'global: %4d' % global_step + ',[epoch:%4d/' % (epoch+config.CONTINUE_EPOCH) + 'EPOCH: %4d] \t' % epochs
                       + '[U:%.4f' % (TLOSS_1) + ', L:%.4f' % (TLOSS_2) + ', M:%.4f' % (
                           TLOSS_3) + ']' + '[TLoss: %.4f]' % TLOSS + '/[SLoss: %.4f]' % SLOSS
                       + '\t[TLR: %.6f' % TeacherLR + ']/[SLR: %.6f]' % StudentLR)
