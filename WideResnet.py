@@ -45,7 +45,7 @@ class BasicBlock(layers.Layer):
             name=name+'_bn2'
         )
         self.relu2 = layers.LeakyReLU(alpha=0.2)
-        self.dropout = layers.Dropout(
+        self.Drop = layers.Dropout(
             rate=self.dropout,
             trainable=self.trainable,
             name=name+'_dropout',
@@ -81,6 +81,8 @@ class BasicBlock(layers.Layer):
         out = self.conv1(out)
         out = self.bn2(out)
         out = self.relu2(out)
+        if self.dropout > 0:
+            out = self.Drop(out)
         out = self.conv2(out)
 
         if self.stride != 1 or self.in_channels != self.out_channels:
