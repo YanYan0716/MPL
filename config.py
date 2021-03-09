@@ -47,7 +47,7 @@ TEA_CONTINUE = True
 STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 1015
+CONTINUE_EPOCH = 1265
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'
@@ -69,7 +69,7 @@ TEACHER_LR_WARMUP_STEPS = 10000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
-NUM_DECAY_STEPS = 3000
+NUM_DECAY_STEPS = 6000
 LR_DECAY_RATE = 0.97
 
 # about optimizer
