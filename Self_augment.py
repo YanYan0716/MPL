@@ -56,7 +56,7 @@ REPLACE_FUNCS = frozenset({
 
 
 class RandAugment(object):
-    def __init__(self, num_layers=2, magnitude=None, cutout_const=40, translate_const=100., available_ops=None):
+    def __init__(self, num_layers=1, magnitude=None, cutout_const=40, translate_const=100., available_ops=None):
         '''
         reference: https://arxiv.org/abs/1909.13719
         :param num_layers:
