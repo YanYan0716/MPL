@@ -38,16 +38,16 @@ STD_SAVE_PATH = './weights/S'
 MAX_EPOCHS = 19200
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
-UDA_STEPS = 20000
+UDA_STEPS = 40000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
 
 # continue train
-TEA_CONTINUE = False
+TEA_CONTINUE = True
 STD_CONTINUE = False
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 0
+CONTINUE_EPOCH = 45
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'
@@ -62,10 +62,10 @@ UDA_THRESHOLD = 0.6
 
 # about learning rate
 STUDENT_LR = 0.005  # student
-STUDENT_LR_WARMUP_STEPS = 10000
-STUDENT_LR_WAIT_STEPS = 20000
+STUDENT_LR_WARMUP_STEPS = 20000
+STUDENT_LR_WAIT_STEPS = 40000
 TEACHER_LR = 0.005  # teacher
-TEACHER_LR_WARMUP_STEPS = 10000
+TEACHER_LR_WARMUP_STEPS = 20000
 TEACHER_NUM_WAIT_STEPS = 0
 
 LR_DECAY_TYPE = 'cosine'  # constant, exponential, cosine
