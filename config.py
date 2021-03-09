@@ -61,7 +61,7 @@ UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
 
 # about learning rate
-STUDENT_LR = 0.001  # student
+STUDENT_LR = 0.002  # student
 STUDENT_LR_WARMUP_STEPS = 10000
 STUDENT_LR_WAIT_STEPS = 20000
 TEACHER_LR = 0.001  # teacher
