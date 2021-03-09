@@ -230,13 +230,13 @@ if __name__ == '__main__':
             Sacc = test(student)
             print(f'testing ... acc: {Sacc}')
         # 保存weights
-        if Tacc > TBacc:
+        if Tacc > TBacc and (TBacc > 0.77):
             Tsave_path = config.TEA_SAVE_PATH  # + str(epoch + 1) + '_' + str(batch_idx + 1)
             teacher.save_weights(Tsave_path)
             # tf.saved_model.save(teacher, Tsave_path)
             TBacc = Tacc
             print(f'saving for TBacc {TBacc}, Tpath:{Tsave_path}')
-        if Sacc > SBacc:
+        if Sacc > SBacc and (SBacc > 0.77):
             Ssave_path = config.STD_SAVE_PATH  # + str(epoch + 1) + '_' + str(batch_idx + 1)
             student.save_weights(Ssave_path)
             SBacc = Sacc
