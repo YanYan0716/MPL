@@ -46,7 +46,7 @@ GRAD_BOUND = 1e9
 TEA_CONTINUE = True
 STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
-STD_LOAD_PATH = '../input/weights/weights/T'
+STD_LOAD_PATH = '../input/weights/weights/S'
 CONTINUE_EPOCH = 0
 
 # about testing
