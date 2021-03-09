@@ -46,7 +46,7 @@ GRAD_BOUND = 1e9
 TEA_CONTINUE = True
 STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
-STD_LOAD_PATH = '../input/weights/weights/S'
+STD_LOAD_PATH = '../input/weights/weights/T'
 CONTINUE_EPOCH = 0
 
 # about testing
@@ -61,10 +61,10 @@ UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
 
 # about learning rate
-STUDENT_LR = 0.005  # student
+STUDENT_LR = 0.05  # student
 STUDENT_LR_WARMUP_STEPS = 10000
 STUDENT_LR_WAIT_STEPS = 20000
-TEACHER_LR = 0.005  # teacher
+TEACHER_LR = 0.05  # teacher
 TEACHER_LR_WARMUP_STEPS = 10000
 TEACHER_NUM_WAIT_STEPS = 0
 
