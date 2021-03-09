@@ -23,7 +23,7 @@ class BasicBlock(layers.Layer):
         self.trainable = trainable
 
         self.bn1 = layers.BatchNormalization(
-            momentum=0.001,
+            momentum=0.0001,
             trainable=self.trainable,
             name=name+'_bn1'
         )
@@ -40,7 +40,7 @@ class BasicBlock(layers.Layer):
             name=name+'_conv1',
         )
         self.bn2 = layers.BatchNormalization(
-            momentum=0.001,
+            momentum=0.0001,
             trainable=self.trainable,
             name=name+'_bn2'
         )
@@ -126,7 +126,7 @@ class WideResnet(keras.Model):
         self.Basic12 = BasicBlock(in_channels=k[3], out_channels=k[3], stride=1, dropout=self.dropout, name=name+'_Basic12', trainable=True)
 
         self.bn1 = layers.BatchNormalization(
-            momentum=0.001,
+            momentum=0.0001,
             trainable=self.trainable,
             name=name+'_bn1'
         )
