@@ -23,11 +23,11 @@ class BasicBlock(layers.Layer):
         self.trainable = trainable
 
         self.bn1 = layers.BatchNormalization(
-            momentum=0.001,
+            # momentum=0.001,
             trainable=self.trainable,
             name=name+'_bn1'
         )
-        self.relu1 = layers.LeakyReLU(alpha=0.2)
+        self.relu1 = layers.LeakyReLU(alpha=0.1)
         self.conv1 = layers.Conv2D(
             filters=self.out_channels,
             kernel_size=3,
@@ -35,16 +35,16 @@ class BasicBlock(layers.Layer):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name+'_conv1',
         )
         self.bn2 = layers.BatchNormalization(
-            momentum=0.001,
+            # momentum=0.001,
             trainable=self.trainable,
             name=name+'_bn2'
         )
-        self.relu2 = layers.LeakyReLU(alpha=0.2)
+        self.relu2 = layers.LeakyReLU(alpha=0.1)
         self.Drop = layers.Dropout(
             rate=self.dropout,
             trainable=self.trainable,
@@ -69,7 +69,7 @@ class BasicBlock(layers.Layer):
                 padding='same',
                 use_bias=False,
                 kernel_initializer=keras.initializers.HeNormal(),
-                # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+                kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
                 trainable=self.trainable,
                 name=name+'_shortcut'
             )
@@ -81,8 +81,8 @@ class BasicBlock(layers.Layer):
         out = self.conv1(out)
         out = self.bn2(out)
         out = self.relu2(out)
-        # if self.dropout > 0:
-        #     out = self.Drop(out)
+        if self.dropout > 0:
+            out = self.Drop(out)
         out = self.conv2(out)
 
         if self.stride != 1 or self.in_channels != self.out_channels:
@@ -106,7 +106,7 @@ class WideResnet(keras.Model):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name + '_conv1',
         )
@@ -126,18 +126,18 @@ class WideResnet(keras.Model):
         self.Basic12 = BasicBlock(in_channels=k[3], out_channels=k[3], stride=1, dropout=self.dropout, name=name+'_Basic12', trainable=True)
 
         self.bn1 = layers.BatchNormalization(
-            momentum=0.001,
+            # momentum=0.001,
             trainable=self.trainable,
             name=name+'_bn1'
         )
-        self.relu1 = layers.LeakyReLU(alpha=0.2)
+        self.relu1 = layers.LeakyReLU(alpha=0.1)
 
         self.avgpool = layers.GlobalAveragePooling2D(name=name+'_avgpool')
         self.dense = layers.Dense(
             units=config.NUM_CLASS,
             # kernel_initializer=keras.initializers.RandomNormal(mean=0., stddev=1.),
             # activation='softmax',
-            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             name=name+'_dense',
         )
 
