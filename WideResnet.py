@@ -36,8 +36,9 @@ class BasicBlock(layers.Layer):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
+            activation='relu',
             name=name+'_conv1',
         )
         self.bn2 = layers.BatchNormalization(
@@ -59,8 +60,9 @@ class BasicBlock(layers.Layer):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
+            activation='relu',
             name=name+'_conv2',
         )
         if self.stride != 1 or self.in_channels != self.out_channels:
@@ -71,8 +73,9 @@ class BasicBlock(layers.Layer):
                 padding='same',
                 use_bias=False,
                 kernel_initializer=keras.initializers.HeNormal(),
-                kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+                # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
                 trainable=self.trainable,
+                activation='relu',
                 name=name+'_shortcut'
             )
         self.add = layers.Add(name=name+'_add')
@@ -108,8 +111,9 @@ class WideResnet(keras.Model):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
+            activation='relu',
             name=name + '_conv1',
         )
         self.Basic1 = BasicBlock(in_channels=k[0], out_channels=k[1], stride=1, dropout=self.dropout, name=name+'_Basic1', trainable=True)
