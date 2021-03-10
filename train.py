@@ -145,7 +145,7 @@ if __name__ == '__main__':
             # 反向传播，更新student的参数-------
             StudentLR = Std_lr_fun.__call__(global_step=global_step)
             StdOptim =keras.optimizers.SGD(
-                learning_rate=0.05,
+                learning_rate=TeacherLR,
                 momentum=0.9,
                 nesterov=True,
                 # weight_decay=5e-4,
@@ -196,7 +196,7 @@ if __name__ == '__main__':
             # 反向传播，更新teacher的参数-------
             TeacherLR = Tea_lr_fun.__call__(global_step=global_step)
             TeaOptim = keras.optimizers.SGD(
-                learning_rate=0.05,
+                learning_rate=TeacherLR,
                 momentum=0.9,
                 nesterov=True,
                 # weight_decay=5e-4,
