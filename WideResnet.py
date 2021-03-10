@@ -36,7 +36,7 @@ class BasicBlock(layers.Layer):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name+'_conv1',
         )
@@ -59,7 +59,7 @@ class BasicBlock(layers.Layer):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name+'_conv2',
         )
@@ -71,7 +71,7 @@ class BasicBlock(layers.Layer):
                 padding='same',
                 use_bias=False,
                 kernel_initializer=keras.initializers.HeNormal(),
-                kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+                # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
                 trainable=self.trainable,
                 name=name+'_shortcut'
             )
@@ -108,7 +108,7 @@ class WideResnet(keras.Model):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name + '_conv1',
         )
@@ -139,7 +139,7 @@ class WideResnet(keras.Model):
             units=config.NUM_CLASS,
             kernel_initializer=keras.initializers.RandomNormal(mean=0., stddev=1.),
             # activation='softmax',
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             name=name+'_dense',
         )
 
