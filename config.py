@@ -43,7 +43,7 @@ TEST_EVERY = 2
 GRAD_BOUND = 1e9
 
 # continue train
-TEA_CONTINUE = True
+TEA_CONTINUE = False
 STD_CONTINUE = False
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
