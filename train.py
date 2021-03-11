@@ -66,7 +66,6 @@ if __name__ == '__main__':
     else:
         # teacher = Wrn28k(num_inp_filters=3, k=2)
         teacher = WideResnet().model()
-    teacher_ = teacher.weights
 
     # 构建student模型
     if config.STD_CONTINUE:
@@ -221,8 +220,6 @@ if __name__ == '__main__':
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             GTea, _ = tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
-            # 如何更新参数
-            teacher, teacher_ = my_update(teacher, teacher_)
 
             if (batch_idx + 1) % config.LOG_EVERY == 0:
                 TLOSS = TLOSS / config.LOG_EVERY
