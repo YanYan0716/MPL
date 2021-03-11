@@ -48,6 +48,7 @@ STD_CONTINUE = False
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
 CONTINUE_EPOCH = 0
+EMA = 0.995
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'

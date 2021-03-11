@@ -7,6 +7,8 @@ from tensorflow import keras
 import pandas as pd
 import tensorflow_addons as tfa
 from WideResnet import WideResnet
+from copy import deepcopy
+
 
 import config
 from Model import Wrn28k
@@ -16,6 +18,15 @@ from Dataset import label_image
 from Dataset import unlabel_image
 from Dataset import merge_dataset
 from test import test
+
+
+def my_update(model, model_):
+    for i in range(len(model_)):
+        model.weights[i] = model.weights[i].assign(
+            model.weights[i]*(1-config.EMA)+model_[i]*config.EMA)
+    model_ = deepcopy(model.weights)
+    return model, model_
+
 
 if __name__ == '__main__':
     AUTOTUNE = tf.data.experimental.AUTOTUNE
@@ -55,6 +66,7 @@ if __name__ == '__main__':
     else:
         # teacher = Wrn28k(num_inp_filters=3, k=2)
         teacher = WideResnet().model()
+    teacher_ = teacher.weights
 
     # 构建student模型
     if config.STD_CONTINUE:
@@ -66,6 +78,7 @@ if __name__ == '__main__':
     else:
         # student = Wrn28k(num_inp_filters=3, k=2)
         student = WideResnet().model()
+    student_ = student.weights
 
     # 定义teacher的损失函数，损失函数之一为UdaCrossEntroy
     mpl_loss = tf.losses.CategoricalCrossentropy(
@@ -154,6 +167,9 @@ if __name__ == '__main__':
             GStud_unlabel = s_tape.gradient(cross_entroy['s_on_u'], student.trainable_variables)
             GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
             StdOptim.apply_gradients(zip(GStud_unlabel, student.trainable_variables))
+            # 如何更新参数
+            student, student_ = my_update(student, student_)
+
             # step3: 2nd call student ------------------------------
             logits['s_on_l_new'] = student(l_images)
             cross_entroy['s_on_l_new'] = s_label_loss(
@@ -205,6 +221,8 @@ if __name__ == '__main__':
             GTea = t_tape.gradient(teacher_loss, teacher.trainable_variables)
             GTea, _ = tf.clip_by_global_norm(GTea, config.GRAD_BOUND)
             TeaOptim.apply_gradients(zip(GTea, teacher.trainable_variables))
+            # 如何更新参数
+            teacher, teacher_ = my_update(teacher, teacher_)
 
             if (batch_idx + 1) % config.LOG_EVERY == 0:
                 TLOSS = TLOSS / config.LOG_EVERY
