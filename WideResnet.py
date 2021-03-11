@@ -172,9 +172,9 @@ class WideResnet(keras.Model):
         self.avgpool = layers.GlobalAveragePooling2D(name=name + '_avgpool')
         self.dense = layers.Dense(
             units=config.NUM_CLASS,
-            kernel_initializer=keras.initializers.RandomNormal(mean=0., stddev=1.),
+            # kernel_initializer=keras.initializers.RandomNormal(mean=0., stddev=1.),
             # activation='softmax',
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             name=name + '_dense',
         )
 
