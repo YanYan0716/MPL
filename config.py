@@ -41,6 +41,8 @@ UDA_WEIGHT = 8  # uda的权重
 UDA_STEPS = 20000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
+EMA = 0.995
+
 
 # continue train
 TEA_CONTINUE = False
@@ -48,6 +50,7 @@ STD_CONTINUE = False
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
 CONTINUE_EPOCH = 0
+
 
 # about testing
 # TEST_FILE_PATH = '/content/cifar/test.csv'
