@@ -2,9 +2,9 @@ import tensorflow as tf
 
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 32
-# LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
-# UNLABEL_FILE_PATH = '/content/cifar/train.csv'
+BATCH_SIZE = 64
+LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
+UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
 _MAX_LEVEL = 10
 CUTOUT_CONST = 40.
@@ -38,7 +38,7 @@ STD_SAVE_PATH = './weights/S'
 MAX_EPOCHS = 19200
 MAX_STEPS = MAX_EPOCHS * (int(DATA_LEN / BATCH_SIZE)-1)
 UDA_WEIGHT = 8  # uda的权重
-UDA_STEPS = 10000
+UDA_STEPS = 20000
 TEST_EVERY = 2
 GRAD_BOUND = 1e9
 EMA = 0.995
@@ -53,8 +53,8 @@ CONTINUE_EPOCH = 0
 
 
 # about testing
-# TEST_FILE_PATH = '/content/cifar/test.csv'
-TEST_FILE_PATH = '../input/cifar10/cifar/test.csv'
+TEST_FILE_PATH = '/content/cifar/test.csv'
+# TEST_FILE_PATH = '../input/cifar10/cifar/test.csv'
 TEST_MODEL_PATH = './weights/S'
 
 # about UdaCrossEntroy
