@@ -3,8 +3,8 @@ import tensorflow as tf
 # about dataset
 IMG_SIZE = 32
 BATCH_SIZE = 64
-LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
-UNLABEL_FILE_PATH = '/content/cifar/train.csv'
+# LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
+# UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
 _MAX_LEVEL = 10
 CUTOUT_CONST = 40.
@@ -53,8 +53,8 @@ CONTINUE_EPOCH = 0
 
 
 # about testing
-TEST_FILE_PATH = '/content/cifar/test.csv'
-# TEST_FILE_PATH = '../input/cifar10/cifar/test.csv'
+# TEST_FILE_PATH = '/content/cifar/test.csv'
+TEST_FILE_PATH = '../input/cifar10/cifar/test.csv'
 TEST_MODEL_PATH = './weights/S'
 
 # about UdaCrossEntroy
