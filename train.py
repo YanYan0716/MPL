@@ -110,7 +110,7 @@ if __name__ == '__main__':
     )
 
     global_step = 62*config.CONTINUE_EPOCH
-    print(f'start training from global step {global_step}...')
+    print(f'start training from global step {global_step}......')
     TBacc = 0
     Tacc = 0
     SBacc = 0
