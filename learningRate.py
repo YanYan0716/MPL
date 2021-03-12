@@ -87,3 +87,17 @@ def LearningRate(initial_lr, num_warmup_steps, num_wait_steps):
 
     return lr
 '''
+
+import math
+def lr_lambda(current_step):
+    if current_step < 3:
+        return float(current_step) / float(max(1, 3))
+
+    progress = float(current_step - 3) / \
+               float(max(1, 10 - 3))
+    return max(0.0, 0.5 * (1.0 + math.cos(math.pi * float(0.5) * 2.0 * progress)))
+
+
+if __name__ == '__main__':
+    for i in range(10):
+        print(lr_lambda(i))
