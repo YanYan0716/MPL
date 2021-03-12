@@ -23,7 +23,8 @@ class BasicBlock(layers.Layer):
         self.trainable = trainable
 
         self.bn1 = layers.BatchNormalization(
-            momentum=0.001,
+            momentum=0.999,
+            epsilon=config.BATCH_NORM_EPSILON,
             trainable=self.trainable,
             name=name+'_bn1'
         )
@@ -35,12 +36,13 @@ class BasicBlock(layers.Layer):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name+'_conv1',
         )
         self.bn2 = layers.BatchNormalization(
-            momentum=0.001,
+            momentum=0.999,
+            epsilon=config.BATCH_NORM_EPSILON,
             trainable=self.trainable,
             name=name+'_bn2'
         )
@@ -57,7 +59,7 @@ class BasicBlock(layers.Layer):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name+'_conv2',
         )
@@ -69,7 +71,7 @@ class BasicBlock(layers.Layer):
                 padding='same',
                 use_bias=False,
                 kernel_initializer=keras.initializers.HeNormal(),
-                kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+                # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
                 trainable=self.trainable,
                 name=name+'_shortcut'
             )
@@ -104,7 +106,7 @@ class WideResnet(keras.Model):
             padding='same',
             use_bias=False,
             kernel_initializer=keras.initializers.HeNormal(),
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             trainable=self.trainable,
             name=name + '_conv1',
         )
@@ -124,7 +126,8 @@ class WideResnet(keras.Model):
         self.Basic12 = BasicBlock(in_channels=k[3], out_channels=k[3], stride=1, dropout=self.dropout, name=name+'_Basic12', trainable=True)
 
         self.bn1 = layers.BatchNormalization(
-            momentum=0.001,
+            momentum=0.999,
+            epsilon=config.BATCH_NORM_EPSILON,
             trainable=self.trainable,
             name=name+'_bn1'
         )
@@ -135,7 +138,7 @@ class WideResnet(keras.Model):
             units=config.NUM_CLASS,
             # kernel_initializer=keras.initializers.RandomNormal(mean=0., stddev=1.),
             # activation='softmax',
-            kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
+            # kernel_regularizer=regularizers.l2(config.WEIGHT_DECAY),
             name=name+'_dense',
         )
 
