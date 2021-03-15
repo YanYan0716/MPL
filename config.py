@@ -2,7 +2,7 @@ import tensorflow as tf
 
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 # LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
 # UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
@@ -46,10 +46,10 @@ EMA = 0.995
 
 # continue train
 TEA_CONTINUE = True
-STD_CONTINUE = False
+STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
-# STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 150
+STD_LOAD_PATH = '../input/weights/weights/S'
+CONTINUE_EPOCH = 300
 
 
 # about testing
@@ -65,7 +65,7 @@ UDA_THRESHOLD = 0.6
 
 # about learning rate
 STUDENT_LR = 0.005  # student
-STUDENT_LR_WARMUP_STEPS = 10000
+STUDENT_LR_WARMUP_STEPS = 20000
 STUDENT_LR_WAIT_STEPS = 20000
 TEACHER_LR = 0.005  # teacher
 TEACHER_LR_WARMUP_STEPS = 10000
