@@ -167,7 +167,7 @@ if __name__ == '__main__':
             GStud_unlabel, _ = tf.clip_by_global_norm(GStud_unlabel, config.GRAD_BOUND)
             StdOptim.apply_gradients(zip(GStud_unlabel, student.trainable_variables))
             # 如何更新参数
-            # student, student_ = my_update(student, student_)
+            student, student_ = my_update(student, student_)
 
             # step3: 2nd call student ------------------------------
             logits['s_on_l_new'] = student(l_images)
