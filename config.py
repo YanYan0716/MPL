@@ -2,7 +2,7 @@ import tensorflow as tf
 
 # about dataset
 IMG_SIZE = 32
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 # LABEL_FILE_PATH = '/content/cifar/label4000.csv' # google
 # UNLABEL_FILE_PATH = '/content/cifar/train.csv'
 
