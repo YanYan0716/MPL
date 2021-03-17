@@ -49,7 +49,7 @@ TEA_CONTINUE = True
 STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 330
+CONTINUE_EPOCH = 510
 
 
 # about testing
