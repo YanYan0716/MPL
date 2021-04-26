@@ -45,11 +45,11 @@ EMA = 0.995
 
 
 # continue train
-TEA_CONTINUE = True
-STD_CONTINUE = True
+TEA_CONTINUE = False
+STD_CONTINUE = False
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 680
+CONTINUE_EPOCH = 0
 
 
 # about testing
@@ -64,10 +64,10 @@ UDA_TEMP = 0.7
 UDA_THRESHOLD = 0.6
 
 # about learning rate
-STUDENT_LR = 0.005  # student
+STUDENT_LR = 0.0005  # student
 STUDENT_LR_WARMUP_STEPS = 40000
 STUDENT_LR_WAIT_STEPS = 20000
-TEACHER_LR = 0.005  # teacher
+TEACHER_LR = 0.0005  # teacher
 TEACHER_LR_WARMUP_STEPS = 10000
 TEACHER_NUM_WAIT_STEPS = 0
 
