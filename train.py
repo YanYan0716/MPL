@@ -38,8 +38,8 @@ if __name__ == '__main__':
     ds_label_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_label_train = ds_label_train \
         .map(label_image, num_parallel_calls=AUTOTUNE) \
+        .shuffle(buffer_size=4000) \
         .batch(config.BATCH_SIZE, drop_remainder=True) \
-        .shuffle(buffer_size=4000)\
         .prefetch(AUTOTUNE)
 
     # 无标签的数据集 batch_size=config.BATCH_SIZE*config.UDA_DATA
@@ -49,8 +49,8 @@ if __name__ == '__main__':
     ds_unlabel_train = tf.data.Dataset.from_tensor_slices((file_paths, labels))
     ds_unlabel_train = ds_unlabel_train \
         .map(unlabel_image, num_parallel_calls=AUTOTUNE) \
+        .shuffle(buffer_size=50000) \
         .batch(config.BATCH_SIZE * config.UDA_DATA, drop_remainder=True) \
-        .shuffle(buffer_size=50000)\
         .prefetch(AUTOTUNE)
 
     # 将有标签数据和无标签数据整合成最终的数据形式
