@@ -46,10 +46,10 @@ EMA = 0.995
 
 # continue train
 TEA_CONTINUE = True
-STD_CONTINUE = False
+STD_CONTINUE = True
 TEA_LOAD_PATH = '../input/weights/weights/T'
 STD_LOAD_PATH = '../input/weights/weights/S'
-CONTINUE_EPOCH = 151
+CONTINUE_EPOCH = 344
 
 
 # about testing
